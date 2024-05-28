@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #define DIMNOMBRE 50
-#define DIMDNI 10
+#define DIMDNI 11
 
 typedef struct{
     char dni[DIMDNI];
@@ -43,12 +44,14 @@ Usuario crearUsuario();
 void cargarUsuario(char usuarios[]);
 void mostrarUsuarios(char usuarios[]);
 void mostrarUsuario(Usuario usuario);
+void mostrarUsuarioPorDni(char usuarios[],char dni[]);
 
 int main()
 {
     char control = 's';
     int eleccion, eleccionUsuario, eleccionEventos, eleccionTareas;
     char archivoUsuarios[20];
+    char dni[DIMDNI];
     strcpy(archivoUsuarios, "usuarios.bin");
 
     do{
@@ -84,6 +87,10 @@ int main()
     case 3:
         break;
     case 4:
+        printf("\nIngrese el dni: ");
+        fflush(stdin);
+        scanf("%s", &dni);
+        mostrarUsuarioPorDni(archivoUsuarios, dni);
         break;
     case 5:
         mostrarUsuarios(archivoUsuarios);
@@ -173,15 +180,15 @@ int validarDni(char dni[]){
 
 //FUNCION PARA CARGAR DNI, RECIBE POR PARAMETRO UN ARREGLO. EN UN CICLO SE INGRESA EL DNI Y SE GUARDA EN UNA VARIABLE Y SE REPITE
 //HASTA QUE SE CUMPLA LA VALIDACION. AL FINAL IGUALA LA VARIABLE A DNI
-char cargarDni(char dni[]){
+void cargarDni(char dni[]){
     char aux[DIMDNI];
-    char dni[50];
     do{
         printf("\nIngrese DNI (formato: 00.000.000): ");
         fflush(stdin);
-        gets(dni);
-    }while(validarDni(dni)!=0);
+        gets(aux);
+    }while(validarDni(aux)!=0);
     strcpy(dni, aux);
+
 }
 
 // FUNCION QUE RECIBE POR PARAMETRO UN INT Y COMPRUEBA SI ES MAYOR O IGUAL A 0, SI ES MAYOR O IGUAL A 0 RETORNA 0, SINO -1
@@ -237,7 +244,7 @@ Usuario crearUsuario(){
 
     printf("\n --------------------------- \n");
     cargarNombre(usuario.nombre);
-    usuario.dni = cargarDni();
+    cargarDni(usuario.dni);
     usuario.edad = cargarEdad();
     usuario.genero = cargarGenero();
     printf("\n --------------------------- \n");
@@ -280,8 +287,39 @@ void mostrarUsuarios(char usuarios[]){
             mostrarUsuario(usuario);
         }
         fclose(archi);
-    }else{
-    printf("el archivo no se abrio");
     }
 }
+
+void mostrarUsuarioPorDni(char usuarios[], char dni[]){
+    FILE *archi;
+    Usuario usuario;
+    int resultado;
+    int encontrado = -1;
+    archi = fopen(usuarios, "rb");
+
+    if(archi!=NULL){
+        while(fread(&usuario, sizeof(Usuario), 1, archi)>0 && encontrado !=0){
+        //fseek(archi, sizeof(Usuario), SEEK_SET);
+
+        resultado = strcmp(usuario.dni, dni);
+        printf("DNI: %s", dni);
+        printf("USUARIO DNI: %s", usuario.dni);
+
+        if(resultado==0){
+            encontrado=0;
+            break;
+            }
+        }
+    }
+
+    if(encontrado == 0){
+        mostrarUsuario(usuario);
+    }else{
+        printf("\nEl usuario no fue encontrado\n");
+    }
+    fclose(archi);
+
+}
+
+
 
