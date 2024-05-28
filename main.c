@@ -5,6 +5,7 @@
 #define DIMNOMBRE 50
 #define DIMDNI 11
 
+//AGREGAR ROLES
 typedef struct{
     char dni[DIMDNI];
     char nombre[DIMNOMBRE];
@@ -47,6 +48,9 @@ void mostrarUsuario(Usuario usuario);
 Usuario buscarPorDni(char usuarios[], char dni[]);
 Usuario modificarUsuario(Usuario usuario);
 void modificarUsuarioPorDNI(char usuarios[], char dni[]);
+int pasajeDeArchivoAArray(Usuario array[],char dni[], char usuarios[]);
+void pasajeDeArregloAArchivo(Usuario array[], int validos, char usuarios[]);
+void eliminarUsuario(char usuarios[], Usuario *array, char dni[]);
 
 int main()
 {
@@ -56,6 +60,7 @@ int main()
     char dni[DIMDNI];
     Usuario usuario;
     strcpy(archivoUsuarios, "usuarios.bin");
+    Usuario arregloUsuarios[100];
 
     do{
         printf("\n --------------------\n"
@@ -86,6 +91,10 @@ int main()
         cargarUsuario(archivoUsuarios);
         break;
     case 2:
+        printf("\nIngrese el dni: ");
+        fflush(stdin);
+        scanf("%s", &dni);
+        eliminarUsuario(archivoUsuarios, arregloUsuarios, dni);
         break;
     case 3:
         printf("\nIngrese el dni: ");
@@ -409,5 +418,50 @@ void modificarUsuarioPorDNI(char usuarios[], char dni[]){
         fclose(archi);
     }
 }
+
+int pasajeDeArchivoAArray(Usuario array[],char dni[], char usuarios[]){
+    FILE *archi;
+    archi=fopen(usuarios, "rb");
+    Usuario usuario;
+    int i=0;
+    int resultado;
+
+    if(archi!=NULL){
+        while(fread(&usuario, sizeof(Usuario), 1, archi)>0){
+
+            resultado = strcmp(usuario.dni, dni);
+
+            if(resultado !=0){
+                array[i] = usuario;
+                i++;
+            }
+        }
+    }
+    fclose(archi);
+    return i;
+}
+
+void pasajeDeArregloAArchivo(Usuario array[], int validos, char usuarios[]){
+    FILE *archi;
+    archi=fopen(usuarios, "wb");
+    int i=0;
+
+    if(archi!=NULL){
+        while(i< validos){
+            fwrite(&array[i], sizeof(Usuario),1,archi);
+            i++;
+        }
+    }
+    fclose(archi);
+}
+
+void eliminarUsuario(char usuarios[], Usuario array[], char dni[]){
+    int validos;
+    validos = pasajeDeArchivoAArray(array, dni, usuarios);
+    pasajeDeArregloAArchivo(array,validos, usuarios);
+
+    printf("\n Usuario eliminado \n");
+}
+
 
 
