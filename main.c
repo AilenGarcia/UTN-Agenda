@@ -41,7 +41,6 @@ char cargarGenero();
 int validarEdad(int edad);
 int cargarEdad();
 Usuario crearUsuario();
-
 void cargarUsuario(char usuarios[]);
 void mostrarUsuarios(char usuarios[]);
 void mostrarUsuario(Usuario usuario);
@@ -53,11 +52,6 @@ int main()
     int eleccion, eleccionUsuario, eleccionEventos, eleccionTareas;
     char archivoUsuarios[20];
     strcpy(archivoUsuarios, "usuarios.dat");
-    Usuario usuario;
-    char *nombre;
-    char *dni;
-    int edad;
-    char genero;
 
     do{
         printf("\n --------------------\n"
@@ -230,7 +224,6 @@ int validarGenero(char genero[]){
 //FUNCION PARA CARGAR EDAD, TRABAJA CON UNA VARIABLE CHAR. EN UN CICLO SE INGRESA EL GENERO Y SE REPITE HASTA QUE SE CUMPLA LA
 //VALIDACION. AL FINAL RETORNA EL GENERO
 char cargarGenero(){
-    printf("GENERO");
     char genero;
     do{
         printf("\nIngrese genero f/m: ");
