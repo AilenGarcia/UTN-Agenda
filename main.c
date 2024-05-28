@@ -44,7 +44,9 @@ Usuario crearUsuario();
 void cargarUsuario(char usuarios[]);
 void mostrarUsuarios(char usuarios[]);
 void mostrarUsuario(Usuario usuario);
-void mostrarUsuarioPorDni(char usuarios[],char dni[]);
+Usuario buscarPorDni(char usuarios[], char dni[]);
+Usuario modificarUsuario(Usuario usuario);
+void modificarUsuarioPorDNI(char usuarios[], char dni[]);
 
 int main()
 {
@@ -52,6 +54,7 @@ int main()
     int eleccion, eleccionUsuario, eleccionEventos, eleccionTareas;
     char archivoUsuarios[20];
     char dni[DIMDNI];
+    Usuario usuario;
     strcpy(archivoUsuarios, "usuarios.bin");
 
     do{
@@ -85,12 +88,16 @@ int main()
     case 2:
         break;
     case 3:
+        printf("\nIngrese el dni: ");
+        fflush(stdin);
+        scanf("%s", &dni);
+        modificarUsuarioPorDNI(archivoUsuarios, dni);
         break;
     case 4:
         printf("\nIngrese el dni: ");
         fflush(stdin);
         scanf("%s", &dni);
-        mostrarUsuarioPorDni(archivoUsuarios, dni);
+        usuario = buscarPorDni(archivoUsuarios, dni);
         break;
     case 5:
         mostrarUsuarios(archivoUsuarios);
@@ -290,7 +297,8 @@ void mostrarUsuarios(char usuarios[]){
     }
 }
 
-void mostrarUsuarioPorDni(char usuarios[], char dni[]){
+//FUNCION QUE RECIBE POR PARAMETROS EL NOMBRE DEL ARCHIVO Y EN DNI, REVISA EN EL ARCHIVO Y EN EL CASO QUE EXISTA TE LO MUESTRA
+Usuario buscarPorDni(char usuarios[], char dni[]){
     FILE *archi;
     Usuario usuario;
     int resultado;
@@ -298,12 +306,9 @@ void mostrarUsuarioPorDni(char usuarios[], char dni[]){
     archi = fopen(usuarios, "rb");
 
     if(archi!=NULL){
-        while(fread(&usuario, sizeof(Usuario), 1, archi)>0 && encontrado !=0){
-        //fseek(archi, sizeof(Usuario), SEEK_SET);
+        while(fread(&usuario, sizeof(Usuario), 1, archi)>0){
 
         resultado = strcmp(usuario.dni, dni);
-        printf("DNI: %s", dni);
-        printf("USUARIO DNI: %s", usuario.dni);
 
         if(resultado==0){
             encontrado=0;
@@ -317,9 +322,92 @@ void mostrarUsuarioPorDni(char usuarios[], char dni[]){
     }else{
         printf("\nEl usuario no fue encontrado\n");
     }
+
     fclose(archi);
 
+    return usuario;
 }
 
+//FUNCION PARA MODIFICAR UN USUARIO, RECIBE POR PARAMETRO UN USUARIO, CON UN SWITCH SE ELIGE QUE DESEA CAMBIAR Y SE RETORNA EL USUARIO
+// MODIFICADO
+Usuario modificarUsuario(Usuario usuario){
+    printf("\nModificacion del usuario con dni %s \n", usuario.dni);
+    char eleccion='s';
+    int control;
+
+    do{
+        printf("Que desea modificar? \n"
+               "1) Nombre \n"
+               "2) DNI \n"
+               "3) Edad \n"
+               "4) Genero \n");
+        fflush(stdin);
+        scanf("%i", &control);
+
+        switch(control){
+    case 1:
+        printf("Ingrese el nombre: ");
+        fflush(stdin);
+        gets(usuario.nombre);
+        break;
+    case 2:
+        printf("Ingrese el dni: ");
+        fflush(stdin);
+        gets(usuario.dni);
+        break;
+    case 3:
+        printf("Ingrese la edad: ");
+        fflush(stdin);
+        scanf("%i", &usuario.edad);
+        break;
+    case 4:
+        printf("Ingrese el genero: ");
+        fflush(stdin);
+        scanf("%c", &usuario.genero);
+        break;
+    default:
+        printf("Elija una opcion valida \n");
+        break;
+    }
+    printf("Si desea continuar modificando presione s \n");
+    fflush(stdin);
+    scanf("%c", &eleccion);
+    }while(eleccion=='s');
+    return usuario;
+}
+
+//FUNCION PARA MODIFICAR UN USUARIO DE UN ARCHIVO, RECIBE POR PARAMETRO EL USUARIO Y EL DNI, LO BUSCA EN EL ARCHIVO Y DESPUES SE
+//MODIFICA Y REESCRIBE EN EL ARCHIVO
+void modificarUsuarioPorDNI(char usuarios[], char dni[]){
+    FILE *archi;
+    archi = fopen(usuarios, "r+b");
+    Usuario usuario;
+    int encontrado = -1;
+    int acc =0;
+
+    if(archi!=NULL){
+        while(fread(&usuario, sizeof(Usuario), 1, archi)>0){
+            acc++;
+            encontrado = strcmp(usuario.dni, dni);
+
+            if(encontrado==0){
+                encontrado=0;
+                break;
+            }
+        }
+
+        if(encontrado==-1){
+            printf("El usuario no fue encontrado \n");
+        }
+
+        if(encontrado==0){
+            printf("DNI: %s",usuario.dni);
+            usuario = modificarUsuario(usuario);
+        }
+        fseek(archi, sizeof(Usuario)*(acc-1), SEEK_SET);
+        fwrite(&usuario, sizeof(Usuario), 1, archi);
+        fclose(archi);
+    }
+}
 
 
