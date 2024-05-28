@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-const int DIMNOMBRE = 50;
-const int DIMDNI = 10;
+#define DIMNOMBRE 50
+#define DIMDNI 10
 
 typedef struct{
-    char *dni;
-    char *nombre;
+    char dni[DIMDNI];
+    char nombre[DIMNOMBRE];
     int  edad;
     char genero;
 } Usuario;
@@ -33,9 +32,9 @@ typedef struct{
 */
 
 int validarNombre(char nombre[]);
-char* cargarNombre();
+void cargarNombre(char nombre[]);
 int validarDni(char dni[]);
-char* cargarDni();
+void cargarDni(char dni[]);
 int validarGenero(char genero[]);
 char cargarGenero();
 int validarEdad(int edad);
@@ -45,13 +44,12 @@ void cargarUsuario(char usuarios[]);
 void mostrarUsuarios(char usuarios[]);
 void mostrarUsuario(Usuario usuario);
 
-
 int main()
 {
     char control = 's';
     int eleccion, eleccionUsuario, eleccionEventos, eleccionTareas;
     char archivoUsuarios[20];
-    strcpy(archivoUsuarios, "usuarios.dat");
+    strcpy(archivoUsuarios, "usuarios.bin");
 
     do{
         printf("\n --------------------\n"
@@ -150,17 +148,16 @@ int validarNombre(char nombre[]){
     }
 }
 
-//FUNCION PARA CARGAR NOMBRE, TRABAJA CON ARREGLOS DINAMICOS. EN UN CICLO SE INGRESA EL NOMBRE Y SE REPITE HASTA QUE SE CUMPLA LA
-//VALIDACION. AL FINAL RETORNA EL NOMBRE
-char* cargarNombre(){
-    char *nombre = (char*) malloc(DIMNOMBRE * sizeof(char));
+//FUNCION PARA CARGAR NOMBRE, RECIBE POR PARAMETRO UN ARREGLO. EN UN CICLO SE INGRESA EL NOMBRE Y SE GUARDA EN UNA VARIABLE Y SE REPITE
+//HASTA QUE SE CUMPLA LA VALIDACION. AL FINAL IGUALA LA VARIABLE A NOMBRE
+void cargarNombre(char nombre[]){
+    char aux[DIMNOMBRE];
     do{
         printf("\nIngrese nombre: ");
         fflush(stdin);
-        gets(nombre);
-    }while(validarNombre(nombre)!=0);
-
-    return nombre;
+        gets(aux);
+    }while(validarNombre(aux)!=0);
+    strcpy(nombre, aux);
 }
 
 // FUNCION QUE RECIBE POR PARAMETRO UN ARREGLO DE STRING Y COMPARA LA CANTIDAD DE CARACTERES QUE CONTIENE, SI ES IGUAL A 10
@@ -174,17 +171,17 @@ int validarDni(char dni[]){
     }
 }
 
-//FUNCION PARA CARGAR DNI, TRABAJA CON ARREGLOS DINAMICOS. EN UN CICLO SE INGRESA EL DNI Y SE REPITE HASTA QUE SE CUMPLA LA
-//VALIDACION. AL FINAL RETORNA EL DNI
-char* cargarDni(){
-    char *dni = (char*) malloc(DIMDNI * sizeof(char));
+//FUNCION PARA CARGAR DNI, RECIBE POR PARAMETRO UN ARREGLO. EN UN CICLO SE INGRESA EL DNI Y SE GUARDA EN UNA VARIABLE Y SE REPITE
+//HASTA QUE SE CUMPLA LA VALIDACION. AL FINAL IGUALA LA VARIABLE A DNI
+char cargarDni(char dni[]){
+    char aux[DIMDNI];
+    char dni[50];
     do{
         printf("\nIngrese DNI (formato: 00.000.000): ");
         fflush(stdin);
         gets(dni);
     }while(validarDni(dni)!=0);
-
-    return dni;
+    strcpy(dni, aux);
 }
 
 // FUNCION QUE RECIBE POR PARAMETRO UN INT Y COMPRUEBA SI ES MAYOR O IGUAL A 0, SI ES MAYOR O IGUAL A 0 RETORNA 0, SINO -1
@@ -239,7 +236,7 @@ Usuario crearUsuario(){
     Usuario usuario;
 
     printf("\n --------------------------- \n");
-    usuario.nombre = cargarNombre();
+    cargarNombre(usuario.nombre);
     usuario.dni = cargarDni();
     usuario.edad = cargarEdad();
     usuario.genero = cargarGenero();
@@ -283,5 +280,8 @@ void mostrarUsuarios(char usuarios[]){
             mostrarUsuario(usuario);
         }
         fclose(archi);
+    }else{
+    printf("el archivo no se abrio");
     }
 }
+
