@@ -5,12 +5,12 @@
 #define DIMNOMBRE 50
 #define DIMDNI 11
 
-//AGREGAR ROLES
 typedef struct{
     char dni[DIMDNI];
     char nombre[DIMNOMBRE];
     int  edad;
     char genero;
+    int rol;
 } Usuario;
 /*
 typedef struct{
@@ -263,6 +263,7 @@ Usuario crearUsuario(){
     cargarDni(usuario.dni);
     usuario.edad = cargarEdad();
     usuario.genero = cargarGenero();
+    usuario.rol = 0;
     printf("\n --------------------------- \n");
 
     return usuario;
@@ -419,6 +420,8 @@ void modificarUsuarioPorDNI(char usuarios[], char dni[]){
     }
 }
 
+//FUNCION PARA PASAR DATOS DE UN ARCHIVO A UN ARRAY EXCEPTO EL USUARIO CON EL DNI PASADO POR PARAMETRO
+//PASA POR PARAMETRO UN ARRAY, UN DNI Y EL ARCHIVO. RETORNA LOS VALIDOS
 int pasajeDeArchivoAArray(Usuario array[],char dni[], char usuarios[]){
     FILE *archi;
     archi=fopen(usuarios, "rb");
@@ -441,6 +444,7 @@ int pasajeDeArchivoAArray(Usuario array[],char dni[], char usuarios[]){
     return i;
 }
 
+//FUNCION PARA PASAR DATOS DE UN ARRAY A UN ARCHIVO PASA POR PARAMETRO UN ARRAY, LA CANTIDAD DE VALIDOS Y EL ARCHIVO
 void pasajeDeArregloAArchivo(Usuario array[], int validos, char usuarios[]){
     FILE *archi;
     archi=fopen(usuarios, "wb");
@@ -455,6 +459,7 @@ void pasajeDeArregloAArchivo(Usuario array[], int validos, char usuarios[]){
     fclose(archi);
 }
 
+//FUNCION PARA ELIMINAR UN USUARIO, PASA POR PARAMETROS EL ARCHIVO, UN ARRAY DE USUARIOS Y UN DNI
 void eliminarUsuario(char usuarios[], Usuario array[], char dni[]){
     int validos;
     validos = pasajeDeArchivoAArray(array, dni, usuarios);
