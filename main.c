@@ -5,15 +5,17 @@
 
 #define DIMNOMBRE 50
 #define DIMDNI 11
+#define DIMPASS 10
 
 typedef struct{
     char dni[DIMDNI];
     char nombre[DIMNOMBRE];
     int  edad;
     char genero;
+    char pass[DIMPASS];
     int rol;
 } Usuario;
-/*
+
 typedef struct{
    int day, month, year;
 } Fecha;
@@ -32,13 +34,17 @@ typedef struct{
     char estado;
     Fecha fecha[];
 } Cita;
-*/
 
+int dniDuplicada(char usuarios[], char dni[]);
+int validarPorDni(char usuarios[], char dni[]);
+int iniciarSesion(char usuarios[]);
 void cargarDatos(char nombreArchivo[]);
+int validarPass(char pass[]);
+void cargarPass(char pass[]);
 int validarNombre(char nombre[]);
 void cargarNombre(char nombre[]);
 int validarDni(char dni[]);
-void cargarDni(char dni[]);
+void cargarDni(char dni[], char usuarios[]);
 int validarGenero(char genero[]);
 char cargarGenero();
 int validarEdad(int edad);
@@ -78,13 +84,17 @@ int main()
         fflush(stdin);
         scanf("%i", &menu);
 
+        system("cls");
+
         switch(menu){
     case 1:
-        accesoPorRol=0;
+        system("cls");
+        accesoPorRol=iniciarSesion(archivoUsuarios);
         break;
     case 2:
-        accesoPorRol=1;
-        //cargarUsuario(archivoUsuarios);
+        system("cls");
+        cargarUsuario(archivoUsuarios);
+        accesoPorRol=0;
         break;
     default:
         printf("Error. Elija una opcion valida. \n");
@@ -143,6 +153,7 @@ int main()
     }
 
     if(accesoPorRol == 0){
+        system("cls");
         printf("\n --------------------\n"
                "Que desea hacer? \n "
                "1) Eventos \n "
@@ -197,7 +208,25 @@ int main()
     return 0;
 }
 
-//void iniciarSesion(char dni[], char pass[], char usuarios[])
+int iniciarSesion(char usuarios[]){
+    Usuario usuario;
+    char dni[DIMDNI];
+    char pass[DIMPASS];
+
+    printf("Ingresar dni: ");
+    fflush(stdin);
+    gets(dni);
+
+    printf("Ingresar dni: ");
+    fflush(stdin);
+    gets(pass);
+
+    usuario = buscarPorDni(usuarios,dni);
+
+    if(usuario.pass ==pass){
+        return usuario.rol;
+    }
+}
 
 // FUNCION QUE RECIBE POR PARAMETRO UN ARREGLO DE STRING Y COMPARA LA CANTIDAD DE CARACTERES QUE CONTIENE, SI ES MAYOR A 1
 // RETORNA 0, SINO -1
@@ -222,6 +251,36 @@ void cargarNombre(char nombre[]){
     strcpy(nombre, aux);
 }
 
+//FUNCION QUE RECIBE POR PARAMETROS EL NOMBRE DEL ARCHIVO Y EN DNI, REVISA EN EL ARCHIVO Y EN EL CASO QUE EXISTA RETORNA 0, SINO -1
+int validarPorDni(char usuarios[], char dni[]){
+    FILE *archi;
+    Usuario usuario;
+    int resultado;
+    int encontrado = -1;
+    archi = fopen(usuarios, "rb");
+
+    if(archi!=NULL){
+        while(fread(&usuario, sizeof(Usuario), 1, archi)>0){
+
+        resultado = strcmp(usuario.dni, dni);
+
+        if(resultado==0){
+            encontrado=0;
+            break;
+            }
+        }
+    }
+
+    fclose(archi);
+
+    if(encontrado == 0){
+        printf("\n DNI existente \n");
+        return 0;
+    }else{
+        return -1;
+    }
+}
+
 // FUNCION QUE RECIBE POR PARAMETRO UN ARREGLO DE STRING Y COMPARA LA CANTIDAD DE CARACTERES QUE CONTIENE, SI ES IGUAL A 10
 // RETORNA 0, SINO -1
 int validarDni(char dni[]){
@@ -235,15 +294,14 @@ int validarDni(char dni[]){
 
 //FUNCION PARA CARGAR DNI, RECIBE POR PARAMETRO UN ARREGLO. EN UN CICLO SE INGRESA EL DNI Y SE GUARDA EN UNA VARIABLE Y SE REPITE
 //HASTA QUE SE CUMPLA LA VALIDACION. AL FINAL IGUALA LA VARIABLE A DNI
-void cargarDni(char dni[]){
+void cargarDni(char dni[], char usuarios[]){
     char aux[DIMDNI];
     do{
         printf("\nIngrese DNI (formato: 00.000.000): ");
         fflush(stdin);
         gets(aux);
-    }while(validarDni(aux)!=0);
+    }while(validarDni(aux)!=0 && validarPorDni(usuarios, aux)==-1);
     strcpy(dni, aux);
-
 }
 
 // FUNCION QUE RECIBE POR PARAMETRO UN INT Y COMPRUEBA SI ES MAYOR O IGUAL A 0, SI ES MAYOR O IGUAL A 0 RETORNA 0, SINO -1
@@ -293,13 +351,37 @@ char cargarGenero(){
     return genero;
 }
 
+// FUNCION QUE RECIBE POR PARAMETRO UN ARREGLO DE STRING Y COMPARA LA CANTIDAD DE CARACTERES QUE CONTIENE, SI ES IGUAL A 8
+// RETORNA 0, SINO -1
+int validarPass(char pass[]){
+    if(strlen(pass) == 8){
+        return 0;
+    }else{
+        printf("\n Pass mal ingresado, por favor intentelo otra vez: ");
+        return -1;
+    }
+}
+
+//FUNCION PARA CARGAR PASS, RECIBE POR PARAMETRO UN ARREGLO. EN UN CICLO SE INGRESA EL PASS Y SE GUARDA EN UNA VARIABLE Y SE REPITE
+//HASTA QUE SE CUMPLA LA VALIDACION. AL FINAL IGUALA LA VARIABLE A PASS
+void cargarPass(char pass[]){
+    char aux[DIMPASS];
+    do{
+        printf("\nIngresar password (Tiene que tener 8 caracteres): ");
+        fflush(stdin);
+        gets(aux);
+    }while(validarPass(aux)!=0);
+    strcpy(pass, aux);
+}
+
 //FUNCION PARA CREAR USUARIOS, VA LLAMANDO A LAS FUNCIONES DE CARGAR LOS ATRIBUTOS(NOMBRE, DNI, EDAD, GENERO) Y RETORNA EL USUARIO
-Usuario crearUsuario(){
+Usuario crearUsuario(char usuarios[]){
     Usuario usuario;
 
     printf("\n --------------------------- \n");
     cargarNombre(usuario.nombre);
-    cargarDni(usuario.dni);
+    cargarPass(usuario.pass);
+    cargarDni(usuario.dni, usuarios);
     usuario.edad = cargarEdad();
     usuario.genero = cargarGenero();
     usuario.rol = 0;
@@ -316,7 +398,7 @@ void cargarUsuario(char usuarios[]){
     archi=fopen(usuarios, "ab");
 
     if(archi!=NULL){
-            usuario = crearUsuario();
+            usuario = crearUsuario(usuarios);
             fwrite(&usuario, sizeof(Usuario), 1, archi);
         fclose(archi);
     }
@@ -510,25 +592,31 @@ void eliminarUsuario(char usuarios[], Usuario array[], char dni[]){
 //FUNCION PARA CARGAR 10 DATOS DE PRUEBA
 void cargarDatos(char nombreArchivo[]){
     FILE *archi;
+
+    archi = fopen(nombreArchivo, "rb");
+    if (archi != NULL) {
+        fclose(archi);
+        return;
+    }
+
     Usuario usuarios[10] = {
-        {"12.345.678", "Ailen Garcia", 25, 'F', 0},
-        {"23.456.789", "Pedro Do Brito", 40, 'M', 0},
-        {"34.567.891", "Franco Ferreira", 20, 'M', 0},
-        {"45.678.912", "Marta Lopez", 35, 'F', 0},
-        {"56.789.123", "Camila Perez", 22, 'F', 0},
-        {"98.765.432", "Franco Sanchez", 40, 'M', 0},
-        {"87.654.321", "Patricia Rodriguez", 26, 'F', 0},
-        {"76.543.219", "Diego Fernandez", 33, 'M', 0},
-        {"65.432.198", "Mabel Gullo", 27, 'F', 0},
-        {"00.000.000", "Administrador", 30, 'M', 1}
+        {"12.345.678", "Ailen Garcia", 25, 'F', "hola", 0},
+        {"23.456.789", "Pedro Do Brito", 40, 'M', "hola", 0},
+        {"34.567.891", "Franco Ferreira", 20, 'M', "hola", 0},
+        {"45.678.912", "Marta Lopez", 35, 'F', "hola", 0},
+        {"56.789.123", "Camila Perez", 22, 'F', "hola", 0},
+        {"98.765.432", "Franco Sanchez", 40, 'M', "hola", 0},
+        {"87.654.321", "Patricia Rodriguez", 26, 'F', "hola", 0},
+        {"76.543.219", "Diego Fernandez", 33, 'M', "hola", 0},
+        {"65.432.198", "Mabel Gullo", 27, 'F', "hola", 0},
+        {"00.000.000", "Administrador", 30, 'M', "mundo", 1}
     };
 
     archi = fopen(nombreArchivo, "wb");
     if (archi != NULL) {
         fwrite(usuarios, sizeof(Usuario), 10, archi);
+        fclose(archi);
     }
-
-    fclose(archi);
 }
 
 
