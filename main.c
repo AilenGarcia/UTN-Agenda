@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "colors.h"
 
 #define DIMNOMBRE 50
 #define DIMDNI 11
@@ -33,6 +34,7 @@ typedef struct{
 } Cita;
 */
 
+void cargarDatos(char nombreArchivo[]);
 int validarNombre(char nombre[]);
 void cargarNombre(char nombre[]);
 int validarDni(char dni[]);
@@ -55,26 +57,44 @@ void eliminarUsuario(char usuarios[], Usuario *array, char dni[]);
 int main()
 {
     char control = 's';
-    int eleccion, eleccionUsuario, eleccionEventos, eleccionTareas;
+    char controlMenu = 's';
+    int menu, eleccion, eleccionUsuario, eleccionEventos, eleccionTareas;
+    int accesoPorRol = 5;
     char archivoUsuarios[20];
     char dni[DIMDNI];
     Usuario usuario;
     strcpy(archivoUsuarios, "usuarios.bin");
     Usuario arregloUsuarios[100];
 
+    cargarDatos(archivoUsuarios);
+
+    printf( RED );
+    printf("          BIENVENIDOS! \n");
+    printf( WHITE );
+
     do{
-        printf("\n --------------------\n"
-               "Que desea hacer? \n "
-               "1) Usuarios \n "
-               "2) Eventos \n "
-               "3) Tareas \n"
-               "--------------------\n");
+        printf("1) Iniciar sesion \n"
+               "2) Registrase \n");
         fflush(stdin);
-        scanf("%i", &eleccion);
+        scanf("%i", &menu);
 
-        switch(eleccion){
+        switch(menu){
     case 1:
+        accesoPorRol=0;
+        break;
+    case 2:
+        accesoPorRol=1;
+        //cargarUsuario(archivoUsuarios);
+        break;
+    default:
+        printf("Error. Elija una opcion valida. \n");
+        }
 
+    }while((accesoPorRol == 1) && (accesoPorRol == 0));
+
+    do{
+    if(accesoPorRol == 1){
+        system("cls");
         printf("\n --------------------\n"
                "1) Crear usuario \n"
                "2) Eliminar usuario \n"
@@ -85,37 +105,54 @@ int main()
         fflush(stdin);
         scanf("%i", &eleccionUsuario);
 
-        switch(eleccionUsuario){
+        system("cls");
 
+        switch(eleccionUsuario){
     case 1:
+        system("cls");
         cargarUsuario(archivoUsuarios);
         break;
     case 2:
         printf("\nIngrese el dni: ");
         fflush(stdin);
         scanf("%s", &dni);
+        system("cls");
         eliminarUsuario(archivoUsuarios, arregloUsuarios, dni);
         break;
     case 3:
         printf("\nIngrese el dni: ");
         fflush(stdin);
         scanf("%s", &dni);
+        system("cls");
         modificarUsuarioPorDNI(archivoUsuarios, dni);
         break;
     case 4:
         printf("\nIngrese el dni: ");
         fflush(stdin);
         scanf("%s", &dni);
+        system("cls");
         usuario = buscarPorDni(archivoUsuarios, dni);
         break;
     case 5:
+        system("cls");
         mostrarUsuarios(archivoUsuarios);
         break;
     default:
         printf("Error. Elija una opcion valida \n");
         }
-        break;
-    case 2:
+    }
+
+    if(accesoPorRol == 0){
+        printf("\n --------------------\n"
+               "Que desea hacer? \n "
+               "1) Eventos \n "
+               "2) Tareas \n"
+               "--------------------\n");
+        fflush(stdin);
+        scanf("%i", &eleccion);
+
+        switch(eleccion){
+    case 1:
         printf("1) Anotar evento \n"
                "2) Tachar evento \n"
                "3) Modificar evento \n"
@@ -131,7 +168,7 @@ int main()
             }
         break;
 
-    case 3:
+    case 2:
               printf("1) Anotar tarea \n"
                "2) Tachar tarea \n"
                "3) Modificar tarea \n"
@@ -151,7 +188,7 @@ int main()
     default:
         printf("Error. Elija una opcion valida. \n");
         }
-
+    }
         printf("Si desea continuar presione s \n");
         fflush(stdin);
         scanf("%c", &control);
@@ -159,6 +196,8 @@ int main()
 
     return 0;
 }
+
+//void iniciarSesion(char dni[], char pass[], char usuarios[])
 
 // FUNCION QUE RECIBE POR PARAMETRO UN ARREGLO DE STRING Y COMPARA LA CANTIDAD DE CARACTERES QUE CONTIENE, SI ES MAYOR A 1
 // RETORNA 0, SINO -1
@@ -468,5 +507,28 @@ void eliminarUsuario(char usuarios[], Usuario array[], char dni[]){
     printf("\n Usuario eliminado \n");
 }
 
+//FUNCION PARA CARGAR 10 DATOS DE PRUEBA
+void cargarDatos(char nombreArchivo[]){
+    FILE *archi;
+    Usuario usuarios[10] = {
+        {"12.345.678", "Ailen Garcia", 25, 'F', 0},
+        {"23.456.789", "Pedro Do Brito", 40, 'M', 0},
+        {"34.567.891", "Franco Ferreira", 20, 'M', 0},
+        {"45.678.912", "Marta Lopez", 35, 'F', 0},
+        {"56.789.123", "Camila Perez", 22, 'F', 0},
+        {"98.765.432", "Franco Sanchez", 40, 'M', 0},
+        {"87.654.321", "Patricia Rodriguez", 26, 'F', 0},
+        {"76.543.219", "Diego Fernandez", 33, 'M', 0},
+        {"65.432.198", "Mabel Gullo", 27, 'F', 0},
+        {"00.000.000", "Administrador", 30, 'M', 1}
+    };
+
+    archi = fopen(nombreArchivo, "wb");
+    if (archi != NULL) {
+        fwrite(usuarios, sizeof(Usuario), 10, archi);
+    }
+
+    fclose(archi);
+}
 
 
