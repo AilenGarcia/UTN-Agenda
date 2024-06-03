@@ -1,44 +1,118 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "colors.h"
 #include "agenda.h"
 
 int main()
 {
-    char nombreArchivo[50]={"franco.bin"};
-    ///fijarse para que se usan y cuales son los validos en la funcion del case 3
-    int validos = 0;
     char control = 's';
-    int eleccion, eleccionUsuario, eleccionEventos, eleccionTareas;
+    char controlMenu = 's';
+    int menu, eleccion, eleccionUsuario, eleccionEventos, eleccionTareas;
+    int accesoPorRol = 5;
+    char archivoUsuarios[20];
+    char dni[DIMDNI];
+    Usuario usuario;
+    strcpy(archivoUsuarios, "usuarios.bin");
+    Usuario arregloUsuarios[100];
+
+    cargarDatos(archivoUsuarios);
+
+    printf( RED );
+    printf("          BIENVENIDOS! \n");
+    printf( WHITE );
 
     do{
-        printf("Que desea hacer? \n"
-               "1) Usuarios \n "
-               "2) Eventos \n "
-               "3) Tareas \n");
+        printf("1) Iniciar sesion \n"
+               "2) Registrase \n");
+        fflush(stdin);
+        scanf("%i", &menu);
+
+        system("cls");
+
+        switch(menu){
+    case 1:
+        system("cls");
+        accesoPorRol=iniciarSesion(archivoUsuarios);
+        printf("\n RETORNO: %i", accesoPorRol);
+        if(accesoPorRol != 0 && accesoPorRol != 1){
+            printf("\n Datos invalidos, por favor ingreselos correctamente \n");
+        }
+        break;
+    case 2:
+        system("cls");
+        cargarUsuario(archivoUsuarios);
+        accesoPorRol=0;
+        break;
+    default:
+        printf("Error. Elija una opcion valida. \n");
+        }
+
+    system("cls");
+    }while(accesoPorRol == -1);
+
+    do{
+    if(accesoPorRol == 1){
+        system("cls");
+        printf("\n --------------------\n"
+               "1) Crear usuario \n"
+               "2) Eliminar usuario \n"
+               "3) Modificar usuario \n"
+               "4) Consultar por un usuario \n"
+               "5) Listado de usuarios \n"
+               "--------------------\n");
+        fflush(stdin);
+        scanf("%i", &eleccionUsuario);
+
+        system("cls");
+
+        switch(eleccionUsuario){
+    case 1:
+        system("cls");
+        cargarUsuario(archivoUsuarios);
+        break;
+    case 2:
+        printf("\nIngrese el dni: ");
+        fflush(stdin);
+        scanf("%s", &dni);
+        system("cls");
+        eliminarUsuario(archivoUsuarios, arregloUsuarios, dni);
+        break;
+    case 3:
+        printf("\nIngrese el dni: ");
+        fflush(stdin);
+        scanf("%s", &dni);
+        system("cls");
+        modificarUsuarioPorDNI(archivoUsuarios, dni);
+        break;
+    case 4:
+        printf("\nIngrese el dni: ");
+        fflush(stdin);
+        scanf("%s", &dni);
+        system("cls");
+        usuario = buscarPorDni(archivoUsuarios, dni);
+        break;
+    case 5:
+        system("cls");
+        mostrarUsuarios(archivoUsuarios);
+        break;
+    default:
+        printf("Error. Elija una opcion valida \n");
+        }
+    }
+
+    if(accesoPorRol == 0){
+        system("cls");
+        printf("\n --------------------\n"
+               "Que desea hacer? \n "
+               "1) Eventos \n "
+               "2) Tareas \n"
+               "--------------------\n");
         fflush(stdin);
         scanf("%i", &eleccion);
 
         switch(eleccion){
     case 1:
-
-        printf("1) Crear usuario \n"
-               "2) Eliminar usuario \n"
-               "3) Modificar usuario \n"
-               "4) Consultar por un usuario \n"
-               "5) Listado de usuarios \n");
-        fflush(stdin);
-        scanf("%i", &eleccionUsuario);
-
-        switch(eleccionUsuario){
-
-    case 1:
-        break;
-    default:
-        printf("Error. Elija una opcion valida \n");
-        }
-        break;
-    case 2:
         printf("1) Anotar evento \n"
                "2) Tachar evento \n"
                "3) Modificar evento \n"
@@ -54,7 +128,7 @@ int main()
             }
         break;
 
-    case 3:
+    case 2:
               printf("1) Anotar tarea \n"
                "2) Tachar tarea \n"
                "3) Modificar tarea \n"
@@ -63,10 +137,8 @@ int main()
         fflush(stdin);
         scanf("%i",&eleccionTareas);
 
-        ///nico (su ayudante favorito) dice que switch dento de switch no plssss :)
             switch(eleccionTareas){
             case 1:
-                anotarTarea(nombreArchivo, validos);
                 break;
             default:
                 printf("Error. Elija una opcion valida \n");
@@ -76,7 +148,7 @@ int main()
     default:
         printf("Error. Elija una opcion valida. \n");
         }
-
+    }
         printf("Si desea continuar presione s \n");
         fflush(stdin);
         scanf("%c", &control);
@@ -84,5 +156,3 @@ int main()
 
     return 0;
 }
-
-

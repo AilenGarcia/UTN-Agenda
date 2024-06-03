@@ -31,9 +31,11 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="franco/tareas.c">
+		<Unit filename="agenda.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="agenda.h" />
+		<Unit filename="colors.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
