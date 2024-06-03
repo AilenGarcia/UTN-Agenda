@@ -1,32 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-typedef struct{
-    int dni;
-    char nombre[20];
-    int  edad;
-    char genero;
-} Usuario;
-
-typedef struct{
-   int day, month, year;
-} Fecha;
-
-typedef struct{
-    int id;
-    char nombre[30];
-    char estado;
-    Usuario persona[20];
-    Fecha fecha[];
-} Evento;
-
-typedef struct{
-    int id;
-    char nombre[30];
-    char estado;
-    Fecha fecha[];
-} Cita;
+#include "agenda.h"
 
 int main()
 {
@@ -110,45 +85,4 @@ int main()
     return 0;
 }
 
-int anotarTarea(char nombreArchivo[], int validos) //anota la tarea dentro del archivo, comprobando tambien si el nombre de la tarea no está repetida
-{
-    FILE *archi= fopen(archi, "ab");
-    ///en
-    Cita nuevaTarea;
-    if (archi==NULL)
-    {
-        printf ("no se pudo abrir el archivo.");
-        fclose (archi);
-        return -1;
-    }
-
-
-
-   printf("ingrese el numero identificatorio de su nueva tarea: ");
-fflush(stdin);
-   scanf ("%i", &nuevaTarea.id);
-///la funcion esta en el .h, repasar librerias para implementarlas bie, porque las funciones van en un .c aparte
-///por eso no anda la funcion de validar
-///igualemente coordinen los nombres de las structuras
-///cambien el nombre de las variables que pusieron aca
-///
-   if(validarTarea(nuevaTarea.id, archi)==1){ //comprueba si el nombre que ingresó está repetido o no
-    printf("la tarea ya existe.");
-    fclose(archi);
-   }
-
-   printf("ingrese el nombre de su tarea: ");
-fgets(nuevaTarea.nombre,50, stdin);
-
-printf ("ingrese la fecha a recordar de esta tarea(formato dd/mm): ");
-fflush (stdin);
-scanf ("%i", nuevaTarea.fecha);
-
-
-
-   fwrite(&nuevaTarea,sizeof(Cita),1, archi);
-    printf("tarea anotada con exito!");
-
-    return 0;
-}
 
