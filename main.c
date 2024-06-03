@@ -35,7 +35,7 @@ typedef struct{
     Fecha fecha[];
 } Cita;
 
-int dniDuplicada(char usuarios[], char dni[]);
+//int dniDuplicada(char usuarios[], char dni[]);
 int validarPorDni(char usuarios[], char dni[]);
 int iniciarSesion(char usuarios[]);
 void cargarDatos(char nombreArchivo[]);
@@ -54,6 +54,7 @@ void cargarUsuario(char usuarios[]);
 void mostrarUsuarios(char usuarios[]);
 void mostrarUsuario(Usuario usuario);
 Usuario buscarPorDni(char usuarios[], char dni[]);
+Usuario buscador(char usuarios[], char dni[]);
 Usuario modificarUsuario(Usuario usuario);
 void modificarUsuarioPorDNI(char usuarios[], char dni[]);
 int pasajeDeArchivoAArray(Usuario array[],char dni[], char usuarios[]);
@@ -90,6 +91,10 @@ int main()
     case 1:
         system("cls");
         accesoPorRol=iniciarSesion(archivoUsuarios);
+        printf("\n RETORNO: %i", accesoPorRol);
+        if(accesoPorRol != 0 && accesoPorRol != 1){
+            printf("\n Datos invalidos, por favor ingreselos correctamente \n");
+        }
         break;
     case 2:
         system("cls");
@@ -100,7 +105,8 @@ int main()
         printf("Error. Elija una opcion valida. \n");
         }
 
-    }while((accesoPorRol == 1) && (accesoPorRol == 0));
+    system("cls");
+    }while(accesoPorRol == -1);
 
     do{
     if(accesoPorRol == 1){
@@ -217,14 +223,16 @@ int iniciarSesion(char usuarios[]){
     fflush(stdin);
     gets(dni);
 
-    printf("Ingresar dni: ");
+    printf("Ingresar pass: ");
     fflush(stdin);
     gets(pass);
 
-    usuario = buscarPorDni(usuarios,dni);
+    usuario = buscador(usuarios,dni);
 
-    if(usuario.pass ==pass){
+    if(strcmp(usuario.pass,pass)==0){
         return usuario.rol;
+    }else{
+        return -1;
     }
 }
 
@@ -274,10 +282,10 @@ int validarPorDni(char usuarios[], char dni[]){
     fclose(archi);
 
     if(encontrado == 0){
-        printf("\n DNI existente \n");
-        return 0;
-    }else{
+        printf("\n Error. DNI existente \n");
         return -1;
+    }else{
+        return 0;
     }
 }
 
@@ -300,7 +308,7 @@ void cargarDni(char dni[], char usuarios[]){
         printf("\nIngrese DNI (formato: 00.000.000): ");
         fflush(stdin);
         gets(aux);
-    }while(validarDni(aux)!=0 && validarPorDni(usuarios, aux)==-1);
+    }while(validarDni(aux)!=0 || validarPorDni(usuarios, aux)!=0);
     strcpy(dni, aux);
 }
 
@@ -330,7 +338,7 @@ int cargarEdad(){
 
 // FUNCION QUE RECIBE POR PARAMETRO UN CHAR Y COMPRUEBA SI ES M O F, SI LO ES RETORNA 0, SINO -1
 int validarGenero(char genero[]){
-    if(genero == 'm' || genero=='f'){
+    if((genero == 'm') || (genero=='f')){
         return 0;
     }else{
         printf("\n Genero mal ingresado, por favor intentelo otra vez: ");
@@ -428,7 +436,7 @@ void mostrarUsuarios(char usuarios[]){
     }
 }
 
-//FUNCION QUE RECIBE POR PARAMETROS EL NOMBRE DEL ARCHIVO Y EN DNI, REVISA EN EL ARCHIVO Y EN EL CASO QUE EXISTA TE LO MUESTRA
+//FUNCION QUE RECIBE POR PARAMETROS EL NOMBRE DEL ARCHIVO Y EN DNI, REVISA EN EL ARCHIVO Y EN EL CASO QUE EXISTA TE LO MUESTRA Y RETORNA
 Usuario buscarPorDni(char usuarios[], char dni[]){
     FILE *archi;
     Usuario usuario;
@@ -451,6 +459,35 @@ Usuario buscarPorDni(char usuarios[], char dni[]){
     if(encontrado == 0){
         mostrarUsuario(usuario);
     }else{
+        printf("\nEl usuario no fue encontrado\n");
+    }
+
+    fclose(archi);
+
+    return usuario;
+}
+
+//FUNCION QUE RECIBE POR PARAMETROS EL NOMBRE DEL ARCHIVO Y EN DNI, REVISA EN EL ARCHIVO Y EN EL CASO QUE EXISTA TE LO RETORNA
+Usuario buscador(char usuarios[], char dni[]){
+    FILE *archi;
+    Usuario usuario;
+    int resultado;
+    int encontrado = -1;
+    archi = fopen(usuarios, "rb");
+
+    if(archi!=NULL){
+        while(fread(&usuario, sizeof(Usuario), 1, archi)>0){
+
+        resultado = strcmp(usuario.dni, dni);
+
+        if(resultado==0){
+            encontrado=0;
+            break;
+            }
+        }
+    }
+
+    if(encontrado != 0){
         printf("\nEl usuario no fue encontrado\n");
     }
 
