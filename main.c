@@ -1,35 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-typedef struct{
-    int dni;
-    char nombre[20];
-    int  edad;
-    char genero;
-} Usuario;
-
-typedef struct{
-   int day, month, year;
-} Fecha;
-
-typedef struct{
-    int id;
-    char nombre[30];
-    char estado;
-    Usuario persona[20];
-    Fecha fecha[];
-} Evento;
-
-typedef struct{
-    int id;
-    char nombre[30];
-    char estado;
-    Fecha fecha[];
-} Cita;
+#include "agenda.h"
 
 int main()
 {
+    char nombreArchivo[50]={"franco.bin"};
+    ///fijarse para que se usan y cuales son los validos en la funcion del case 3
+    int validos = 0;
     char control = 's';
     int eleccion, eleccionUsuario, eleccionEventos, eleccionTareas;
 
@@ -85,8 +63,10 @@ int main()
         fflush(stdin);
         scanf("%i",&eleccionTareas);
 
+        ///nico (su ayudante favorito) dice que switch dento de switch no plssss :)
             switch(eleccionTareas){
             case 1:
+                anotarTarea(nombreArchivo, validos);
                 break;
             default:
                 printf("Error. Elija una opcion valida \n");
@@ -104,4 +84,5 @@ int main()
 
     return 0;
 }
+
 
