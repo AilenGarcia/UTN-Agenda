@@ -1,62 +1,79 @@
 #include "agenda.h"
 
-int validarTarea(char *idTarea, char tareas[]){ //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA TAREA QUE SE QUIERE ANOTAR ESTÁ REPETIDA O NO
-    FILE *archi;
-    archi = fopen(tareas, "ab");
-    Tarea tareaLeida;
-//rewind (archi);
+int validarCita(char *id, char Citas[]){ //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA TAREA QUE SE QUIERE ANOTAR ESTÁ REPETIDA O NO
+    Cita citaLeida;
 
-    while (fread(&tareaLeida, sizeof(Tarea),1,archi)){
 
-        if (tareaLeida.id==idTarea){
+    while (fread(&citaLeida, sizeof(Cita),1,archi)){
 
-            return 1; //ya hay una tarea con el mismo nombre
+        if (citaLeida.id==id){
+
+            return 1; //ya hay una cita con el mismo nombre
            }
     }
 
  return 0; //ese nombre no existe
 }
 
-int anotarTarea(char nombreArchivo[], int validos) //anota la tarea dentro del archivo, comprobando tambien si el nombre de la tarea no está repetida
+int anotarCita(char nombreArchivo[]) //anota la tarea dentro del archivo, comprobando tambien si el nombre de la tarea no está repetida
 {
     FILE *archi= fopen(nombreArchivo, "ab");
-    ///en
-    Tarea nuevaTarea;
+
+    Cita nuevaCita;
     if (archi==NULL)
     {
-        printf ("no se pudo abrir el archivo.");
+        printf ("\nno se pudo abrir el archivo.");
         fclose (archi);
         return -1;
     }
 
 
 
-    printf("ingrese el numero identificatorio de su nueva tarea: ");
+    printf("\ningrese el numero identificatorio de su nueva cita: ");
     fflush(stdin);
-    scanf ("%i", &nuevaTarea.id);
+    scanf ("%i", &nuevaCita.id);
 ///la funcion esta en el .h, repasar librerias para implementarlas bie, porque las funciones van en un .c aparte
 ///por eso no anda la funcion de validar
 ///igualemente coordinen los nombres de las structuras
 ///cambien el nombre de las variables que pusieron aca
 ///
-    if(validarTarea(nuevaTarea.id, archi)==1)  //comprueba si el nombre que ingresó está repetido o no
+    if(validarCita(nuevaCita.id, archi)==1)  //comprueba si el nombre que ingresó está repetido o no
     {
-        printf("la tarea ya existe.");
+        printf("\nla cita ya existe.");
         fclose(archi);
     }
 
-    printf("ingrese el nombre de su tarea: ");
-    fgets(nuevaTarea.nombre,50, stdin);
+    printf("\ningrese el nombre de su cita: ");
+    fflush(stdin);
+    scanf("%s", &nuevaCita.nombre);
 
-    printf ("ingrese la fecha a recordar de esta tarea(formato dd/mm): ");
+    printf ("\ningrese la fecha a recordar de esta cita(formato dd/mm): ");
     fflush (stdin);
-    scanf ("%i", nuevaTarea.fecha);
+    scanf ("%i", &nuevaCita.fecha);
 
 
 
-    fwrite(&nuevaTarea,sizeof(Tarea),1, archi);
-    printf("tarea anotada con exito!");
-
+    fwrite(&nuevaCita,sizeof(Cita),1, archi);
+    printf("\nCita anotada con exito!\n");
+fclose(archi);
     return 0;
 }
 
+int tacharCita(char nombreArchivo)
+{
+ FILE *archi= fopen(nombreArchivo, "ab");
+
+ Cita tachar1Cita;
+
+if (archi==NULL)
+    {
+        printf ("\nno se pudo abrir el archivo.");
+        fclose (archi);
+        return -1;
+    }
+
+    printf("ingrese el identificador de la cita a tachar: ");
+    fflush(stdin);
+    scanf("%i", &tachar1Cita.id);
+
+}

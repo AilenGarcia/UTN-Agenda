@@ -29,9 +29,9 @@ typedef struct{
     char nombre[30];
     char estado;
     Fecha fecha[];
-} Tarea;
+} Cita;
 
-int validarTarea(char *idTarea, char tareas[]); //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA TAREA QUE SE QUIERE ANOTAR ESTÁ REPETIDA O NO
-int anotarTarea(char nombreArchivo[], int validos);
+int validarCita(char *id, char citas[]); //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA TAREA QUE SE QUIERE ANOTAR ESTÁ REPETIDA O NO
+int anotarCita(char nombreArchivo[]);
 
 #endif // AGENDA_H_INCLUDED

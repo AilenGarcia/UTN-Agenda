@@ -6,16 +6,14 @@
 int main()
 {
     char nombreArchivo[50]={"franco.bin"};
-    ///fijarse para que se usan y cuales son los validos en la funcion del case 3
-    int validos = 0;
     char control = 's';
-    int eleccion, eleccionUsuario, eleccionEventos, eleccionTareas;
+    int eleccion, eleccionUsuario, eleccionEventos, eleccionCitas;
 
     do{
         printf("Que desea hacer? \n"
                "1) Usuarios \n "
                "2) Eventos \n "
-               "3) Tareas \n");
+               "3) Citas \n");
         fflush(stdin);
         scanf("%i", &eleccion);
 
@@ -55,18 +53,22 @@ int main()
         break;
 
     case 3:
-              printf("1) Anotar tarea \n"
-               "2) Tachar tarea \n"
-               "3) Modificar tarea \n"
-               "4) tareas proximas \n"
-               "5) Listado de tareas");
+              printf("1) Anotar cita \n"
+               "2) Tachar cita \n"
+               "3) Modificar cita \n"
+               "4) citas proximas \n"
+               "5) Listado de citas\n"
+                    "\nEleccion: ");
         fflush(stdin);
-        scanf("%i",&eleccionTareas);
+        scanf("%i",&eleccionCitas);
 
-        ///nico (su ayudante favorito) dice que switch dento de switch no plssss :)
-            switch(eleccionTareas){
+            switch(eleccionCitas){
             case 1:
-                anotarTarea(nombreArchivo, validos);
+                anotarCita(nombreArchivo);
+                break;
+
+            case 2:
+
                 break;
             default:
                 printf("Error. Elija una opcion valida \n");
@@ -77,7 +79,7 @@ int main()
         printf("Error. Elija una opcion valida. \n");
         }
 
-        printf("Si desea continuar presione s \n");
+        printf("Si desea continuar presione s: \n");
         fflush(stdin);
         scanf("%c", &control);
     }while(control == 's');
