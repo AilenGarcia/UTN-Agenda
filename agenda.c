@@ -1,6 +1,8 @@
 #include "agenda.h"
-
+//corregir la funcion validar cita
 int validarCita(char *id, char Citas[]){ //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA TAREA QUE SE QUIERE ANOTAR ESTÁ REPETIDA O NO
+    FILE *archi;
+    archi = fopen(Citas, "ab");
     Cita citaLeida;
 
 
@@ -32,11 +34,7 @@ int anotarCita(char nombreArchivo[]) //anota la tarea dentro del archivo, compro
     printf("\ningrese el numero identificatorio de su nueva cita: ");
     fflush(stdin);
     scanf ("%i", &nuevaCita.id);
-///la funcion esta en el .h, repasar librerias para implementarlas bie, porque las funciones van en un .c aparte
-///por eso no anda la funcion de validar
-///igualemente coordinen los nombres de las structuras
-///cambien el nombre de las variables que pusieron aca
-///
+
     if(validarCita(nuevaCita.id, archi)==1)  //comprueba si el nombre que ingresó está repetido o no
     {
         printf("\nla cita ya existe.");
