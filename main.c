@@ -5,10 +5,10 @@
 
 int main()
 {
-    char nombreArchivo[50]={"franco.bin"};
+    char nombreArchivo[50]={"cita.bin"};
     char control = 's';
     int eleccion, eleccionUsuario, eleccionEventos, eleccionCitas;
-
+Cita a;
     do{
         printf("Que desea hacer? \n"
                "1) Usuarios \n "
@@ -70,6 +70,8 @@ int main()
             case 2:
 
                 break;
+            case 5:
+                mostrarCita(nombreArchivo);
             default:
                 printf("Error. Elija una opcion valida \n");
             }

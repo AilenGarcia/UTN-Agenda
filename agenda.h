@@ -13,7 +13,9 @@ typedef struct{
 } Usuario;
 
 typedef struct{
-   int day, month, year;
+   int day;
+   int month;
+   int year;
 } Fecha;
 
 typedef struct{
@@ -31,7 +33,8 @@ typedef struct{
     Fecha fecha[];
 } Cita;
 
-int validarCita(char *id, char citas[]); //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA TAREA QUE SE QUIERE ANOTAR ESTÁ REPETIDA O NO
+int validarCita(int id, FILE* archi); //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA TAREA QUE SE QUIERE ANOTAR ESTÁ REPETIDA O NO
 int anotarCita(char nombreArchivo[]);
+void mostrar1Cita(Cita a);
 
 #endif // AGENDA_H_INCLUDED
