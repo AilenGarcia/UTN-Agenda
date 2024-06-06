@@ -16,6 +16,12 @@ int main()
     strcpy(archivoUsuarios, "usuarios.bin");
     Usuario arregloUsuarios[100];
 
+    Evento miEvento;
+    char archivoEventos[20];
+    strcpy(archivoEventos,"eventos.bin");
+    int registros = 0;
+    int idAEliminar=0;
+
     cargarDatos(archivoUsuarios);
 
     printf( RED );
@@ -119,7 +125,39 @@ int main()
         scanf("%i",&eleccionEventos);
             switch(eleccionEventos){
             case 1:
+                cargarEvento(miEvento);
+                printf("Evento anotado: \n");
+                printf("ID: %i \n", miEvento.id);
+                printf("Nombre: %s \n", miEvento.nombre);
+                printf("Estado: %c \n", miEvento.estado);
+                printf("Fecha: %i / %i / %i \n", miEvento.fecha.day, miEvento.fecha.month, miEvento.fecha.year);
+
                 break;
+
+            case 2:
+
+                registros= cuentaElementosArchivo(archivoEventos);
+                printf("Ingrese la ID a eliminar: \n");
+                fflush(stdin);
+                scanf("%i", &miEvento.id);
+
+                idAEliminar=miEvento.id;
+
+                //eliminarEventoPorID(archivoEventos,idAEliminar,registros);
+
+                break;
+            case 3:
+
+                break;
+
+            case 4:
+
+                break;
+
+            case 5:
+
+                break;
+
             default:
                 printf("Error. Elija una opcion valida \n");
             }

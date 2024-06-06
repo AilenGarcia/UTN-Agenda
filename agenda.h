@@ -25,7 +25,7 @@ typedef struct{
     char nombre[30];
     char estado;
     Usuario persona[20];
-    Fecha fecha[];
+    Fecha fecha;
 } Evento;
 
 typedef struct{
@@ -38,6 +38,12 @@ typedef struct{
 //TAREAS
 int validarTarea(char *idTarea, char tareas[]); //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA TAREA QUE SE QUIERE ANOTAR ESTÁ REPETIDA O NO
 int anotarTarea(char nombreArchivo[], int validos);
+
+//EVENTOS
+void cargarFecha (Evento miEvento);
+void cargarEvento (Evento miEvento);
+void guardarEventoEnArchivo(Evento miEvento, char nombreArchivo[]);
+int cuentaElementosArchivo(char nombreArchivo);
 
 //USUARIOS
 

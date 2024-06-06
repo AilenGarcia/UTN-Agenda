@@ -1,7 +1,7 @@
 #include "agenda.h"
 
 //TAREAS
-int validarTarea(char *idTarea, char tareas[]){ //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA TAREA QUE SE QUIERE ANOTAR EST¡ REPETIDA O NO
+int validarTarea(char *idTarea, char tareas[]){ //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA TAREA QUE SE QUIERE ANOTAR EST√Å REPETIDA O NO
     FILE *archi;
     archi = fopen(tareas, "ab");
     Tarea tareaLeida;
@@ -18,7 +18,7 @@ int validarTarea(char *idTarea, char tareas[]){ //FUNCION QUE COMPRUEBA SI EL NO
  return 0; //ese nombre no existe
 }
 
-int anotarTarea(char nombreArchivo[], int validos) //anota la tarea dentro del archivo, comprobando tambien si el nombre de la tarea no est· repetida
+int anotarTarea(char nombreArchivo[], int validos) //anota la tarea dentro del archivo, comprobando tambien si el nombre de la tarea no est√° repetida
 {
     FILE *archi= fopen(nombreArchivo, "ab");
     ///en
@@ -40,7 +40,7 @@ int anotarTarea(char nombreArchivo[], int validos) //anota la tarea dentro del a
 ///igualemente coordinen los nombres de las structuras
 ///cambien el nombre de las variables que pusieron aca
 ///
-    if(validarTarea(nuevaTarea.id, archi)==1)  //comprueba si el nombre que ingresÛ est· repetido o no
+    if(validarTarea(nuevaTarea.id, archi)==1)  //comprueba si el nombre que ingres√≥ est√° repetido o no
     {
         printf("la tarea ya existe.");
         fclose(archi);
@@ -60,6 +60,134 @@ int anotarTarea(char nombreArchivo[], int validos) //anota la tarea dentro del a
 
     return 0;
 }
+
+//EVENTOS
+void cargarFecha (Evento miEvento)
+{
+    printf("Ingrese el dia: \n");
+    fflush(stdin);
+    scanf("%i", &miEvento.fecha.day);
+
+    printf("Ingrese el mes: \n");
+    fflush(stdin);
+    scanf("%i", &miEvento.fecha.month);
+
+    printf("Ingrese el aÔøΩo: ");
+    fflush(stdin);
+    scanf("%i", &miEvento.fecha.year);
+}
+void cargarEvento (Evento miEvento)
+{
+    char validacionEstado = 'n';
+
+    printf("Ingrese el ID del evento \n");
+    fflush(stdin);
+    scanf("%i", &miEvento.id);
+
+    printf("Ingrese el nombre del Evento: \n");
+    fflush(stdin);
+    scanf("%s", &miEvento.nombre);
+
+    printf("Ingrese la fecha del evento: \n");
+    cargarFecha(miEvento);
+
+    printf("Ingrese el usuario anfitrion");
+    ///poner la funcion carga de usuario
+
+    printf("ÔøΩEl evento ya a ocurrido? \n"
+           "\n Ingrese 's', para si o 'n' para no \n");
+    fflush(stdin);
+    scanf("%c",&validacionEstado);
+
+    if (validacionEstado == 'n' && validacionEstado == 'N')
+    {
+        miEvento.estado=validacionEstado;
+    }
+    else if (validacionEstado == 's' && validacionEstado == 'S')
+    {
+        miEvento.estado = validacionEstado;
+    }
+    else
+    {
+        printf("El estado ingresado no es valido, vuelva a intentarlo");
+    }
+
+
+}
+
+
+void guardarEventoEnArchivo(Evento miEvento,char nombreArchivo[])
+{
+    FILE *archivo = fopen(nombreArchivo, "w+b");
+    if (archivo == NULL) {
+        perror("Error al abrir el archivo");
+        return;
+    }
+
+    fprintf(archivo, "ID: %i\n",miEvento.id);
+    fprintf(archivo, "Nombre: %s\n", miEvento.nombre);
+    fprintf(archivo, "Estado: %c\n", miEvento.estado);
+    fprintf(archivo, "Fecha: %02d/%02d/%04d\n", miEvento.fecha.day, miEvento.fecha.month, miEvento.fecha.year);
+
+    for (int i = 0; i < 20; i++) {
+        if (miEvento.persona[i].dni != 0) { // Verificar si el usuario tiene un DNI asignado
+            fprintf(archivo, "Usuario %i:\n", i + 1);
+            fprintf(archivo, "  DNI: %i\n", miEvento.persona[i].dni);
+            fprintf(archivo, "  Nombre: %s\n", miEvento.persona[i].nombre);
+            fprintf(archivo, "  Edad: %i\n", miEvento.persona[i].edad);
+            fprintf(archivo, "  GÔøΩnero: %c\n", miEvento.persona[i].genero);
+        }
+    }
+
+    fclose(archivo);
+}
+
+int cuentaElementosArchivo(char nombreArchivo)
+{
+
+    FILE* archi= fopen(nombreArchivo, "rb");
+    int registros= 0;
+
+    if(archi!=NULL)
+    {
+        int aux;
+
+        while(fread(&aux, sizeof(int), 1, archi)>0)
+        {
+            registros++;
+        }
+        fclose(archi);
+    }
+    return registros;
+}
+/*
+void eliminarEventoPorID(char *nombreArchivo, int id, int registros) {
+    Evento miEvento[20];
+
+    int indicador = -1;
+    for (int i = 0; i < registros; i++) {
+        if (miEvento[i].id == id) {
+            indicador = i;
+        }
+    }
+
+    if (indicador == -1) {
+        printf("Evento con ID %d no encontrado\n", id);
+        return;
+    }
+
+    for (int i = indicador; i < registros - 1; i++) {
+        miEvento[i] = miEvento[i + 1];
+    }
+    registros--;
+
+    cargarEvento(miEvento);
+    guardarEventoEnArchivo(miEvento, nombreArchivo);
+
+    printf("Evento con ID %d eliminado\n", id);
+}
+*/
+
 
 //USUARIOS
 
