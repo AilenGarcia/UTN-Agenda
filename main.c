@@ -21,6 +21,8 @@ int main()
     strcpy(archivoEventos,"eventos.bin");
     int registros = 0;
     int idAEliminar=0;
+    Evento arrayEvento[100];
+
 
     cargarDatos(archivoUsuarios);
 
@@ -125,13 +127,14 @@ int main()
         scanf("%i",&eleccionEventos);
             switch(eleccionEventos){
             case 1:
-                cargarEvento(miEvento);
+                guardarEventoEnArchivo(archivoEventos);
+                /*miEvento=cargarEvento();
                 printf("Evento anotado: \n");
                 printf("ID: %i \n", miEvento.id);
                 printf("Nombre: %s \n", miEvento.nombre);
                 printf("Estado: %c \n", miEvento.estado);
                 printf("Fecha: %i / %i / %i \n", miEvento.fecha.day, miEvento.fecha.month, miEvento.fecha.year);
-
+                */
                 break;
 
             case 2:
@@ -139,9 +142,9 @@ int main()
                 registros= cuentaElementosArchivo(archivoEventos);
                 printf("Ingrese la ID a eliminar: \n");
                 fflush(stdin);
-                scanf("%i", &miEvento.id);
+                scanf("%i", &idAEliminar);
 
-                idAEliminar=miEvento.id;
+                eliminarEvento(archivoEventos, arrayEvento,idAEliminar);
 
                 //eliminarEventoPorID(archivoEventos,idAEliminar,registros);
 

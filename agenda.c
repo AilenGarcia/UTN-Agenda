@@ -62,23 +62,28 @@ int anotarTarea(char nombreArchivo[], int validos) //anota la tarea dentro del a
 }
 
 //EVENTOS
-void cargarFecha (Evento miEvento)
+Fecha cargarFecha ()
 {
+    Fecha fecha;
     printf("Ingrese el dia: \n");
     fflush(stdin);
-    scanf("%i", &miEvento.fecha.day);
+    scanf("%i", &fecha.day);
 
     printf("Ingrese el mes: \n");
     fflush(stdin);
-    scanf("%i", &miEvento.fecha.month);
+    scanf("%i", &fecha.month);
 
     printf("Ingrese el a�o: ");
     fflush(stdin);
-    scanf("%i", &miEvento.fecha.year);
+    scanf("%i", &fecha.year);
+
+    return fecha;
 }
-void cargarEvento (Evento miEvento)
+
+Evento cargarEvento()
 {
-    char validacionEstado = 'n';
+    Evento miEvento;
+    char validacionEstado = 'm';
 
     printf("Ingrese el ID del evento \n");
     fflush(stdin);
@@ -89,42 +94,37 @@ void cargarEvento (Evento miEvento)
     scanf("%s", &miEvento.nombre);
 
     printf("Ingrese la fecha del evento: \n");
-    cargarFecha(miEvento);
+    miEvento.fecha = cargarFecha();
 
-    printf("Ingrese el usuario anfitrion");
+   // printf("Ingrese el usuario anfitrion");
     ///poner la funcion carga de usuario
-
-    printf("�El evento ya a ocurrido? \n"
+    do{
+    printf("El evento ya a ocurrido? \n"
            "\n Ingrese 's', para si o 'n' para no \n");
     fflush(stdin);
     scanf("%c",&validacionEstado);
 
-    if (validacionEstado == 'n' && validacionEstado == 'N')
-    {
-        miEvento.estado=validacionEstado;
-    }
-    else if (validacionEstado == 's' && validacionEstado == 'S')
-    {
-        miEvento.estado = validacionEstado;
-    }
-    else
-    {
-        printf("El estado ingresado no es valido, vuelva a intentarlo");
-    }
-
-
+    }while(validacionEstado != 'n' && validacionEstado != 'N' && validacionEstado != 's' && validacionEstado != 'S');
+    return miEvento;
 }
 
 
-void guardarEventoEnArchivo(Evento miEvento,char nombreArchivo[])
+void guardarEventoEnArchivo(char nombreArchivo[])
 {
-    FILE *archivo = fopen(nombreArchivo, "w+b");
+    FILE *archivo = fopen(nombreArchivo, "ab");
+    Evento miEvento;
+
     if (archivo == NULL) {
-        perror("Error al abrir el archivo");
+        printf("Error al abrir el archivo");
         return;
     }
 
-    fprintf(archivo, "ID: %i\n",miEvento.id);
+        if(archivo!=NULL){
+            miEvento = cargarEvento();
+            fwrite(&miEvento, sizeof(Evento), 1, archivo);
+        fclose(archivo);
+    }
+    /*fprintf(archivo, "ID: %i\n",miEvento.id);
     fprintf(archivo, "Nombre: %s\n", miEvento.nombre);
     fprintf(archivo, "Estado: %c\n", miEvento.estado);
     fprintf(archivo, "Fecha: %02d/%02d/%04d\n", miEvento.fecha.day, miEvento.fecha.month, miEvento.fecha.year);
@@ -137,7 +137,7 @@ void guardarEventoEnArchivo(Evento miEvento,char nombreArchivo[])
             fprintf(archivo, "  Edad: %i\n", miEvento.persona[i].edad);
             fprintf(archivo, "  G�nero: %c\n", miEvento.persona[i].genero);
         }
-    }
+    }*/
 
     fclose(archivo);
 }
@@ -160,6 +160,51 @@ int cuentaElementosArchivo(char nombreArchivo)
     }
     return registros;
 }
+
+int pasajeDeArchivoAArrayEventos(Evento array[],int id, char nombreArchivo[]){
+    FILE *archi;
+    archi=fopen(nombreArchivo, "rb");
+    Evento eventos;
+    int i=0;
+    int resultado;
+
+    if(archi!=NULL){
+        while(fread(&eventos, sizeof(Evento), 1, archi)>0){
+
+            if(eventos.id == id){
+            resultado = 0;
+            }
+            if(resultado !=0){
+                array[i] = eventos;
+                i++;
+            }
+        }
+    }
+    fclose(archi);
+    return i;
+}
+void pasajeDeArregloAArchivoEvento (Evento array[], int validos, char nombreArchivo[]){
+    FILE *archi;
+    archi=fopen(nombreArchivo, "wb");
+    int i=0;
+
+    if(archi!=NULL){
+        while(i< validos){
+            fwrite(&array[i], sizeof(Evento),1,archi);
+            i++;
+        }
+    }
+    fclose(archi);
+}
+
+void eliminarEvento (char nombreEvento[], Evento array[], int id){
+    int validos;
+    validos = pasajeDeArchivoAArrayEventos(array, id, nombreEvento);
+    pasajeDeArregloAArchivo(array,validos, nombreEvento);
+
+    printf("\n Evento eliminado \n");
+}
+
 /*
 void eliminarEventoPorID(char *nombreArchivo, int id, int registros) {
     Evento miEvento[20];

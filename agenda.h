@@ -40,10 +40,13 @@ int validarTarea(char *idTarea, char tareas[]); //FUNCION QUE COMPRUEBA SI EL NO
 int anotarTarea(char nombreArchivo[], int validos);
 
 //EVENTOS
-void cargarFecha (Evento miEvento);
-void cargarEvento (Evento miEvento);
-void guardarEventoEnArchivo(Evento miEvento, char nombreArchivo[]);
+Fecha cargarFecha ();
+Evento cargarEvento();
+void guardarEventoEnArchivo(char nombreArchivo[]);
 int cuentaElementosArchivo(char nombreArchivo);
+int pasajeDeArchivoAArrayEventos(Evento array[],int id, char nombreArchivo[]);
+void pasajeDeArregloAArchivoEvento (Evento array[], int validos, char nombreArchivo[]);
+void eliminarEvento (char nombreEvento[], Evento array[], int id);
 
 //USUARIOS
 
