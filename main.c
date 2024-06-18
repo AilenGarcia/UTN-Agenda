@@ -34,7 +34,6 @@ int main()
     case 1:
         system("cls");
         accesoPorRol=iniciarSesion(archivoUsuarios);
-        printf("\n RETORNO: %i", accesoPorRol);
         if(accesoPorRol != 0 && accesoPorRol != 1){
             printf("\n Datos invalidos, por favor ingreselos correctamente \n");
         }
@@ -100,8 +99,7 @@ int main()
         printf("Error. Elija una opcion valida \n");
         }
     }
-
-    if(accesoPorRol == 0){
+        if(accesoPorRol == 0){
         system("cls");
         printf("\n --------------------\n"
                "Que desea hacer? \n "
@@ -111,8 +109,7 @@ int main()
         fflush(stdin);
         scanf("%i", &eleccion);
 
-        switch(eleccion){
-    case 1:
+    if(eleccion ==1){
         printf("1) Anotar evento \n"
                "2) Tachar evento \n"
                "3) Modificar evento \n"
@@ -126,9 +123,9 @@ int main()
             default:
                 printf("Error. Elija una opcion valida \n");
             }
-        break;
+        }
 
-    case 2:
+    if(eleccion ==2){
               printf("1) Anotar tarea \n"
                "2) Tachar tarea \n"
                "3) Modificar tarea \n"
@@ -143,12 +140,14 @@ int main()
             default:
                 printf("Error. Elija una opcion valida \n");
             }
+        }
 
-        break;
-    default:
+    if(eleccion !=1 && eleccion !=2){
         printf("Error. Elija una opcion valida. \n");
         }
-    }
+
+        }
+
         printf("Si desea continuar presione s \n");
         fflush(stdin);
         scanf("%c", &control);
