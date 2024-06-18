@@ -62,8 +62,9 @@ Usuario buscarPorDni(char usuarios[], char dni[]);
 Usuario buscador(char usuarios[], char dni[]);
 Usuario modificarUsuario(Usuario usuario);
 void modificarUsuarioPorDNI(char usuarios[], char dni[]);
-int pasajeDeArchivoAArray(Usuario array[],char dni[], char usuarios[]);
-void pasajeDeArregloAArchivo(Usuario array[], int validos, char usuarios[]);
+int pasajeDeArchivoAArray(Usuario **array,char dni[], char usuarios[]);
+void pasajeDeArregloAArchivo(Usuario **array, int validos, char usuarios[]);
+int cantRegistros(char usuarios[]);
 void eliminarUsuario(char usuarios[], Usuario *array, char dni[]);
 
 

@@ -430,12 +430,14 @@ void modificarUsuarioPorDNI(char usuarios[], char dni[]){
 
 //FUNCION PARA PASAR DATOS DE UN ARCHIVO A UN ARRAY EXCEPTO EL USUARIO CON EL DNI PASADO POR PARAMETRO
 //PASA POR PARAMETRO UN ARRAY, UN DNI Y EL ARCHIVO. RETORNA LOS VALIDOS
-int pasajeDeArchivoAArray(Usuario array[],char dni[], char usuarios[]){
+int pasajeDeArchivoAArray(Usuario **array, char dni[], char usuarios[]){
+    int validos = cantRegistros(usuarios);
     FILE *archi;
     archi=fopen(usuarios, "rb");
     Usuario usuario;
     int i=0;
     int resultado;
+    *array = (Usuario*) malloc(validos* sizeof(Usuario));
 
     if(archi!=NULL){
         while(fread(&usuario, sizeof(Usuario), 1, archi)>0){
@@ -443,7 +445,7 @@ int pasajeDeArchivoAArray(Usuario array[],char dni[], char usuarios[]){
             resultado = strcmp(usuario.dni, dni);
 
             if(resultado !=0){
-                array[i] = usuario;
+                (*array)[i] = usuario;
                 i++;
             }
         }
@@ -453,18 +455,32 @@ int pasajeDeArchivoAArray(Usuario array[],char dni[], char usuarios[]){
 }
 
 //FUNCION PARA PASAR DATOS DE UN ARRAY A UN ARCHIVO PASA POR PARAMETRO UN ARRAY, LA CANTIDAD DE VALIDOS Y EL ARCHIVO
-void pasajeDeArregloAArchivo(Usuario array[], int validos, char usuarios[]){
+void pasajeDeArregloAArchivo(Usuario **array, int validos, char usuarios[]){
     FILE *archi;
     archi=fopen(usuarios, "wb");
     int i=0;
 
     if(archi!=NULL){
         while(i< validos){
-            fwrite(&array[i], sizeof(Usuario),1,archi);
+            fwrite(&(*array)[i], sizeof(Usuario),1,archi);
             i++;
         }
     }
     fclose(archi);
+}
+
+int cantRegistros(char usuarios[]){
+    FILE *archi;
+    archi = fopen(usuarios, "rb");
+    int cant;
+
+    if(archi!=NULL){
+        fseek(archi,0, SEEK_END);
+        cant = ftell(archi)/sizeof(Usuario);
+        fclose(archi);
+    }
+
+    return cant;
 }
 
 //FUNCION PARA ELIMINAR UN USUARIO, PASA POR PARAMETROS EL ARCHIVO, UN ARRAY DE USUARIOS Y UN DNI
