@@ -79,7 +79,7 @@ char nombre[25];
                 modificarCitaPorNombre(nombreArchivo,archivoUsuarios,nombre[])
 
             case 5:
-                mostrarCita(nombreArchivo);
+                mostrarCitas(nombreArchivo);
 
             default:
                 printf("Error. Elija una opcion valida \n");

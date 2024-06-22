@@ -263,3 +263,65 @@ void modificarCitaPorNombre(char nombreArchivo[], char archivoUsuarios[], char n
     }
 }
 
+void modificarCitaPorNombre(char nombreArchivo[], char archivoUsuarios[], char nombre[]){
+    FILE *archi;
+    archi = fopen(archivoEvento, "r+b");
+    Cita aux;
+    int encontrado = -1;
+    int acc =0;
+
+    if(archi!=NULL){
+        while(fread(&aux, sizeof(Cita), 1, archi)>0){
+            acc++;
+            encontrado = strcmp(aux.nombre, nombre);
+
+            if(encontrado==0){
+                encontrado=0;
+                break;
+            }
+        }
+
+        if(encontrado==-1){
+            printf("La cita no fue encontrada. \n");
+        }
+
+        if(encontrado!=0){
+            printf("cita: %s",aux.nombre);
+            aux = modificarCita(aux, archivoUsuarios);
+        }
+        fseek(archi, sizeof(Cita)*(acc-1), SEEK_SET);
+        fwrite(&aux, sizeof(Cita), 1, archi);
+        fclose(archi);
+    }
+}
+void mostrarFechaCita (Cita aux)
+{
+    printf(" Dia: %i \n", aux.fecha.day);
+    printf(" Mes: %i \n", aux.fecha.month);
+}
+
+void mostrarCita(Cita aux)
+{
+    puts("\n----------------------------------\n");
+    printf("Nombre: %s \n", aux.nombre);
+    printf("Estado: %s \n", aux.estado);
+    printf("Usuario: \n");
+    printf("Fecha: \n");
+    mostrarFechaCita(aux);
+
+}
+
+void mostrarCitas (char nombreArchivo[]){
+    FILE *archi;
+    Cita aux;
+    archi=fopen(nombreArchivo, "rb");
+
+    if(archi!=NULL){
+        while(fread(&aux, sizeof(Cita),1, archi)>0){
+            mostrarCita(aux);
+        }
+        fclose(archi);
+    }
+}
+
+
