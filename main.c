@@ -2,13 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include "agenda.h"
+#define DIMNOMBRE 50
 
 int main()
 {
     char nombreArchivo[50]={"cita.bin"};
     char control = 's';
     int eleccion, eleccionUsuario, eleccionEventos, eleccionCitas;
-Cita a;
+Cita cita1;
+Cita array[50];
+int id;
+char nombre[25];
     do{
         printf("Que desea hacer? \n"
                "1) Usuarios \n "
@@ -63,15 +67,20 @@ Cita a;
         scanf("%i",&eleccionCitas);
 
             switch(eleccionCitas){
+
             case 1:
                 anotarCita(nombreArchivo);
                 break;
 
             case 2:
-
+                tacharCita(nombreArchivo,array,id);
                 break;
+            case 3:
+                modificarCitaPorNombre(nombreArchivo,archivoUsuarios,nombre[])
+
             case 5:
                 mostrarCita(nombreArchivo);
+
             default:
                 printf("Error. Elija una opcion valida \n");
             }
@@ -87,6 +96,3 @@ Cita a;
     }while(control == 's');
 
     return 0;
-}
-
-
