@@ -13,18 +13,18 @@ int validarCita(char nombre[])  //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA CITA 
     }
 }
 int validarDia(int day){
-    if(day>=1 && day<=31){
+    if(day<1 && day>32){
         return 0;
     }else{
-        return -1;
+        return 1;
     }
 }
 
 int validarMes(int month){
-    if(month>0 && month<13){
+    if(month<0 && month>13){
         return 0;
     }else{
-        return -1;
+        return 1;
     }
 }
    Cita anotar1Cita()
@@ -71,21 +71,24 @@ Fecha cargarFecha ()
 {
     Fecha aux;
 
-    do {
+
     printf("\n----------------------------------");
-    printf("\nIngrese el dia: \n");
+
+   do { printf("\nIngrese el dia: \n");
     fflush(stdin);
     scanf("%i", &aux.day);
+}while(validarDia(aux.day)!=0);
 
-    printf("\nIngrese el mes: \n");
+do{    printf("\nIngrese el mes: \n");
     fflush(stdin);
     scanf("%i", &aux.month);
+}while(validarMes(aux.month)!=0);
 
     printf("\nIngrese el año: \n");
     fflush(stdin);
     scanf("%i", &aux.year);
     printf("----------------------------------");
-    }while (validarDia==0 && validarMes==0);
+
     return aux;
 }
 
