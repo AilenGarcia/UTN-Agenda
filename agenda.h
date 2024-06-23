@@ -42,7 +42,9 @@ int pasajeDeArchivoAArrayCita (Cita array[],int id, char nombreArchivo[]);
 Cita modificarCita (Cita cita1, char archivoUsuarios[]);
 void modificarCitaPorNombre(char nombreArchivo[], char archivoUsuarios[], char nombre[]);
 
+void mostrarCitas (char nombreArchivo[]);
+void mostrarCita(Cita aux);
+void mostrarFechaCita (Cita aux);
 
-void mostrar1Cita(Cita a);
 
 #endif // AGENDA_H_INCLUDED
