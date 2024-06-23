@@ -17,71 +17,63 @@ int validarNombreCita(char nombre[], FILE *archi)
 {
     int validar=0;
     Cita aux;
+
  while (fread(&aux, sizeof(Cita), 1, archi )>0)
  {
     validar=strcmp(nombre,aux.nombre);
-}
 
 if (validar==0)
 {
     printf ("ya hay una cita con el mismo nombre. Ingrese otro nombre.");
     return 0;
 }
-else if (validar<=0)
-    {
-        return -1;
-    }
 
-    else return 1;
 }
 
-
-
+return -1;
+}
 
 int validarDia(int day)
 {
-    if(day>0 && day<32)
-    {
+    if(day>0 && day<32){
         return 0;
-    }
-    else
-    {
-        printf ("ingrese un numero valido.\n");
+    }else{
+        printf("\n -------------- Dia mal ingresado -------------- \n");
         return -1;
     }
 }
 
 int validarMes(int month)
 {
-    if(month>0 && month<13)
-    {
+    if(month>0 && month<13){
         return 0;
-    }
-    else
-    {
-        printf ("ingrese un numero valido.\n");
+    }else{
+        printf("\n -------------- Mes mal ingresado -------------- \n");
         return -1;
     }
 }
+
 Cita anotar1Cita()
 {
     Cita aux;
 FILE *archi;
     aux.id=rand()*9999;
-    aux.estado=0;
-    do{
+    aux.estado='n';
         do{
             printf("\ningrese el nombre de su cita: ");
             fflush(stdin);
             gets(aux.nombre);
 
-        }while(rellenarNombreCita(aux.nombre)>0);
+        }while(rellenarNombreCita(aux.nombre)>0 && validarNombreCita(aux.nombre, archi)!=0);
 
-    }while (validarNombreCita(aux.nombre, archi)!=0);
 
-    printf ("\nsu cita está terminada? 's' para si, 'n' para no: ");
-    fflush (stdin);
-    scanf ("%c", &aux.estado);
+     do{
+    printf("El evento ya a ocurrido? \n"
+           "\n Ingrese 's', para si o 'n' para no \n");
+    fflush(stdin);
+    scanf("%c",&aux.estado);
+
+    }while(aux.estado != 'n' && aux.estado != 'N' && aux.estado != 's' && aux.estado != 'S');
 
     aux.fecha=cargarFecha();
     return aux;
@@ -108,34 +100,31 @@ int anotarCita(char nombreArchivo[]) //anota la tarea dentro del archivo, compro
 
 Fecha cargarFecha ()
 {
-    Fecha aux;
+    Fecha miFecha;
 
-
-    printf("\n----------------------------------");
+    printf("\n ---------------------------- \n");
+    do
+    {
+        printf("Ingrese el dia: \n");
+        fflush(stdin);
+        scanf("%i",&miFecha.day);
+    }while(validarDia(miFecha.day)!=0);
 
     do
     {
-        printf("\nIngrese el dia: \n");
+        printf("Ingrese el mes: \n");
         fflush(stdin);
-        scanf("%i", &aux.day);
-    }
-    while(validarDia(aux.day)!=0);
+        scanf("%i", &miFecha.month);
+    }while(validarMes(miFecha.month) !=0);
 
-    do
-    {
-        printf("\nIngrese el numero de mes: \n");
-        fflush(stdin);
-        scanf("%i", &aux.month);
-    }
-    while(validarMes(aux.month)!=0);
-
-    printf("\nIngrese el año: \n");
+    printf("Ingrese el año: \n");
     fflush(stdin);
-    scanf("%i", &aux.year);
-    printf("----------------------------------");
+    scanf("%i", &miFecha.year);
+    printf("---------------------------------- \n");
 
-    return aux;
+    return miFecha;
 }
+
 
 int retornarIDCitaSegunNombre(char nombreArchivo[]) ///FUNCION QUE RETORNA EL ID DE LA CITA SEGUN EL NOMBRE
 {
@@ -408,7 +397,7 @@ void mostrarCitasProximas(char nombreArchivo[])
                 mostrarCita(cita2,persona);
 
             }
-            while (cita2.estado=='n');
+            while (cita2.estado!='n');
 
         }
         fclose(archi);

@@ -81,7 +81,7 @@ char nombre[25];
             break;
 
             case 4:
-
+            mostrarCitasProximas(nombreArchivo);
                 break;
 
             case 5:
