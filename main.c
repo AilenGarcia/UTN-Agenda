@@ -75,11 +75,18 @@ char nombre[25];
             case 2:
                 tacharCita(nombreArchivo,array,id);
                 break;
+
             case 3:
-                modificarCitaPorNombre(nombreArchivo,archivoUsuarios,nombre[])
+//                modificarCitaPorNombre(nombreArchivo,archivoUsuarios,nombre[])
+            break;
+
+            case 4:
+
+                break;
 
             case 5:
                 mostrarCitas(nombreArchivo);
+                break;
 
             default:
                 printf("Error. Elija una opcion valida \n");
@@ -96,3 +103,4 @@ char nombre[25];
     }while(control == 's');
 
     return 0;
+}

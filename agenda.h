@@ -33,6 +33,7 @@ typedef struct{
 
 int validarCita(char nombre[]); //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA TAREA QUE SE QUIERE ANOTAR ESTÁ REPETIDA O NO
 int anotarCita(char nombreArchivo[]);
+Fecha cargarFecha();
 
 void tacharCita (char nombreArchivo[], Cita array[], int id);
 int retornarIDCitaSegunNombre(char nombreArchivo[]);
@@ -43,7 +44,7 @@ Cita modificarCita (Cita cita1, char archivoUsuarios[]);
 void modificarCitaPorNombre(char nombreArchivo[], char archivoUsuarios[], char nombre[]);
 
 void mostrarCitas (char nombreArchivo[]);
-void mostrarCita(Cita aux);
+void mostrarCita(Cita aux, Usuario persona);
 void mostrarFechaCita (Cita aux);
 
 
