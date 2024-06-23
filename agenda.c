@@ -43,6 +43,8 @@ int validarMes(int month){
 printf ("\nsu cita está terminada? 's' para si, 'n' para no: ");
 fflush (stdin);
 scanf ("%c", &aux.estado);
+
+aux.fecha=cargarFecha();
     return aux;
 }
 
