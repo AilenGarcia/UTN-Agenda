@@ -13,31 +13,38 @@ int rellenarNombreCita(char nombre[])  //FUNCION QUE COMPRUEBA SI EL NOMBRE DE L
     }
 }
 
-int validarNombreCita(char nombre[], FILE *archi)
+int validarNombreCita(char nombre[], FILE *archi, char nombreArchivo[])
 {
+    archi=fopen(nombreArchivo, "rb");
+    if (archi!=NULL){
     int validar=0;
-    Cita aux;
+    Cita cita1;
 
- while (fread(&aux, sizeof(Cita), 1, archi )>0)
- {
-    validar=strcmp(nombre,aux.nombre);
+    while (fread(&cita1, sizeof(Cita), 1, archi )>0)
+    {
 
-if (validar==0)
-{
-    printf ("ya hay una cita con el mismo nombre. Ingrese otro nombre.");
-    return 0;
+        int validar=strcmp(nombre,cita1.nombre);
+
+        if (validar==0)
+        {
+            printf ("ya hay una cita con el mismo nombre. Ingrese otro nombre.");
+            return 0;
+        }
+
+    }
+
+    return -1;
 }
-
-}
-
-return -1;
 }
 
 int validarDia(int day)
 {
-    if(day>0 && day<32){
+    if(day>0 && day<32)
+    {
         return 0;
-    }else{
+    }
+    else
+    {
         printf("\n -------------- Dia mal ingresado -------------- \n");
         return -1;
     }
@@ -45,35 +52,44 @@ int validarDia(int day)
 
 int validarMes(int month)
 {
-    if(month>0 && month<13){
+    if(month>0 && month<13)
+    {
         return 0;
-    }else{
+    }
+    else
+    {
         printf("\n -------------- Mes mal ingresado -------------- \n");
         return -1;
     }
 }
 
-Cita anotar1Cita()
+Cita anotar1Cita(FILE *archi, char nombreArchivo[])
 {
     Cita aux;
-FILE *archi;
     aux.id=rand()*9999;
-    aux.estado='n';
-        do{
-            printf("\ningrese el nombre de su cita: ");
-            fflush(stdin);
-            gets(aux.nombre);
+    aux.estado;
+    int validacionNombre;
+    int validacionCita;
 
-        }while(rellenarNombreCita(aux.nombre)>0 && validarNombreCita(aux.nombre, archi)!=0);
+    do
+    {
+        printf("\ningrese el nombre de su cita: ");
+        fflush(stdin);
+        gets(aux.nombre);
+validacionNombre=validarNombreCita(aux.nombre, archi, nombreArchivo);
+    }
+    while(rellenarNombreCita(aux.nombre)>0 && validacionNombre!=0);
 
 
-     do{
-    printf("El evento ya a ocurrido? \n"
-           "\n Ingrese 's', para si o 'n' para no \n");
-    fflush(stdin);
-    scanf("%c",&aux.estado);
+    do
+    {
+        printf("El evento ya a ocurrido? \n"
+               "\n Ingrese 's', para si o 'n' para no \n");
+        fflush(stdin);
+        scanf("%c",&aux.estado);
 
-    }while(aux.estado != 'n' && aux.estado != 'N' && aux.estado != 's' && aux.estado != 'S');
+    }
+    while(aux.estado != 'n' && aux.estado != 'N' && aux.estado != 's' && aux.estado != 'S');
 
     aux.fecha=cargarFecha();
     return aux;
@@ -82,13 +98,14 @@ FILE *archi;
 
 int anotarCita(char nombreArchivo[]) //anota la tarea dentro del archivo, comprobando tambien si el nombre de la tarea no está repetida
 {
-    FILE *archi= fopen(nombreArchivo, "ab");
+    FILE *archi;
 
     Cita nuevaCita;
     if (archi!=NULL)
     {
-        Cita nuevaCita=anotar1Cita();
+        Cita nuevaCita=anotar1Cita(archi, nombreArchivo);
 
+        archi= fopen(nombreArchivo, "ab");
         fwrite(&nuevaCita,sizeof(Cita),1, archi);
         printf("\nCita anotada con exito!\n");
     }
@@ -108,14 +125,16 @@ Fecha cargarFecha ()
         printf("Ingrese el dia: \n");
         fflush(stdin);
         scanf("%i",&miFecha.day);
-    }while(validarDia(miFecha.day)!=0);
+    }
+    while(validarDia(miFecha.day)!=0);
 
     do
     {
         printf("Ingrese el mes: \n");
         fflush(stdin);
         scanf("%i", &miFecha.month);
-    }while(validarMes(miFecha.month) !=0);
+    }
+    while(validarMes(miFecha.month) !=0);
 
     printf("Ingrese el año: \n");
     fflush(stdin);
@@ -201,11 +220,12 @@ void pasajeDeArregloAArchivoCita (Cita array[], int validos, char nombreArchivo[
 
     if(archi!=NULL)
     {
-        while(i< validos)
+        do
         {
             fwrite(&array[i], sizeof(Cita),1,archi);
             i++;
         }
+        while(i< validos);
     }
     fclose(archi);
 }
