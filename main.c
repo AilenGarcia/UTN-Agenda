@@ -205,7 +205,6 @@ printf("1) Anotar evento \n"
 
             case 8:
                     registros = pasarArray(arrayEvento,archivoEventos);
-                    mostrarArrayMes(arrayEvento,registros);
                     ordenacion_seleccion(arrayEvento, registros);
                     mostrarArrayMes(arrayEvento,registros);
 

@@ -893,6 +893,7 @@ void mostrarArrayMes(Evento arrayMes[], int registros)
         mostrarEvento(arrayMes[i]);
     }
 }
+
 //USUARIOS
 int iniciarSesion(char usuarios[]){
     Usuario usuario;
