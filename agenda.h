@@ -61,6 +61,11 @@ void mostrarCitas (char nombreArchivo[]);
 void cargarPila(Pila *pila, char nombreArchivo[], int mes);
 int cantidadCitasEnMes(char citas[], Pila pila, int mes, char nombreArchivo[]);
 
+int pasajeDeArchivoAArrayCitasNoId(Cita array[], char nombreArchivo[]);
+void insertar(Cita array[],int pos, Cita aux);
+void ordenacion_insercion(Cita array[], int validos);
+void mostrarCitasOrdenadas(char nombreArchivo[], Cita arrayCita[]);
+
 
 //EVENTOS
 void mostrarMatriz(char matriz[12][12], int arrayMes[], char eventos[]);

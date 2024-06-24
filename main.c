@@ -204,12 +204,13 @@ printf("1) Anotar evento \n"
         }
 
     if(eleccion ==2){
-              printf("1) Anotar tarea \n"
-               "2) Tachar tarea \n"
-               "3) Modificar tarea \n"
-               "4) tareas proximas \n"
-               "5) Listado de tareas"
-               "6) Total de citas en el mes"
+              printf("1) Anotar cita \n"
+               "2) Tachar cita \n"
+               "3) Modificar cita \n"
+               "4) citas proximas \n"
+               "5) Listado de citas\n"
+               "6) Total de citas en el mes\n"
+               "7) ordenar citas alfabeticamente\n"
                     "\nEleccion: ");
         fflush(stdin);
         scanf("%i",&eleccionCitas);
@@ -239,20 +240,12 @@ printf("1) Anotar evento \n"
                 break;
 
             case 3:
-                while(controlCitas=='s')
-                    {
                  printf("\nIngrese el Nombre: ");
                     fflush(stdin);
                     scanf("%s", &nombre);
                     system("cls");
-
                     modificarCitaPorNombre(nombreArchivo, archivoUsuarios, nombre);
 
-                    printf("Quiere modificar otra cita? \n"
-                               "Ingrese s para SI o n para NO \n");
-                        fflush(stdin);
-                        scanf("%c", &controlCitas);
-                }
             break;
 
             case 4:
@@ -264,16 +257,18 @@ printf("1) Anotar evento \n"
                 break;
 
             case 6:
-            while(controlCitas=='s')
-            {
                 printf ("ingrese el numero del mes a averiguar: ");
                 fflush(stdin);
                 scanf("%i", &mes);
 
                 cantidad = cantidadCitasEnMes(arrayCita,pila1,mes, nombreArchivo);
                 printf ("Total de citas en el mes %i: %i \n", mes, cantidad);
-            }
                 break;
+
+            case 7:
+                mostrarCitasOrdenadas(nombreArchivo, arrayCita);
+                break;
+
             default:
                 printf("Error. Elija una opcion valida \n");
             }

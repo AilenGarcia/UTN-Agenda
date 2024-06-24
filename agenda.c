@@ -1,9 +1,7 @@
 #include "agenda.h"
 
 //CITAS
-
-//corregir la funcion validar cita
-int rellenarNombreCita(char nombre[])  //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA CITA QUE SE QUIERE ANOTAR EST� REPETIDA O NO
+int rellenarNombreCita(char nombre[])  //comprueba si se ingresó un nombre al campo nombre
 {
     if(strlen(nombre) > 1)
     {
@@ -15,7 +13,7 @@ int rellenarNombreCita(char nombre[])  //FUNCION QUE COMPRUEBA SI EL NOMBRE DE L
         return -1;
     }
 }
-
+//comprueba si el nombre ingresado se encuentra repetido dentro del archivo
 int validarNombreCita(char nombre[], FILE *archi, char nombreArchivo[])
 {
     archi=fopen(nombreArchivo, "rb");
@@ -42,7 +40,7 @@ int validarNombreCita(char nombre[], FILE *archi, char nombreArchivo[])
     return -1;
 }
 }
-
+//carga una variable de tipo cita una vez
 Cita anotar1Cita(FILE *archi, char nombreArchivo[])
 {
     Cita aux;
@@ -65,8 +63,8 @@ Cita anotar1Cita(FILE *archi, char nombreArchivo[])
     aux.fecha=cargarFecha();
     return aux;
 }
-
-int anotarCita(char nombreArchivo[]) //anota la tarea dentro del archivo, comprobando tambien si el nombre de la tarea no est� repetida
+//graba las citas cargadas en el archivo de citas
+int anotarCita(char nombreArchivo[])
 {
     FILE *archi;
 
@@ -84,7 +82,7 @@ int anotarCita(char nombreArchivo[]) //anota la tarea dentro del archivo, compro
 
     return 0;
 }
-
+//busca el id de la cita que quiere tachar el usuario, buscando el nombre de esta
 int retornarIDSegunNombreCita(char nombreArchivo[], char nombre[])
 {
     FILE *archi;
@@ -108,7 +106,7 @@ int retornarIDSegunNombreCita(char nombreArchivo[], char nombre[])
         fclose(archi);
     }
 }
-
+//pasa a un arreglo de citas el total de citas pendientes dentro de un archivo de citas
 int pasajeDeArchivoAArrayCitas(Cita array[],int id, char nombreArchivo[]){
     FILE *archi;
     archi=fopen(nombreArchivo, "rb");
@@ -127,7 +125,7 @@ int pasajeDeArchivoAArrayCitas(Cita array[],int id, char nombreArchivo[]){
 
     return i;
 }
-
+//devuelve las citas del arreglo a su archivo original
 void pasajeDeArregloAArchivoCita (Cita array[], int validos, char nombreArchivo[]){
     FILE *archi;
     archi=fopen(nombreArchivo, "wb");
@@ -141,7 +139,7 @@ void pasajeDeArregloAArchivoCita (Cita array[], int validos, char nombreArchivo[
     }
     fclose(archi);
 }
-
+//elimina la cita que quiere el usuario, buscando su nombre dentro del archivo
 void eliminarCita(char nombreArchivo[], Cita array[], int id){
     int validos;
     validos = pasajeDeArchivoAArrayCitas(array, id, nombreArchivo);
@@ -149,7 +147,7 @@ void eliminarCita(char nombreArchivo[], Cita array[], int id){
 
     printf("\n Cita eliminada \n");
 }
-
+//modifica los campos de la cita elegida
 Cita modificarCita(Cita cita1, char archivoUsuarios[])
 {
 
@@ -196,7 +194,7 @@ Cita modificarCita(Cita cita1, char archivoUsuarios[])
     while(eleccion=='s');
     return cita1;
 }
-
+//busca la cita dentro del archivo, retornando 0 o 1 dependiendo si encuentra la cita o no
 void modificarCitaPorNombre(char nombreArchivo[], char archivoUsuarios[], char nombre[]){
     FILE *archi;
     archi = fopen(nombreArchivo, "r+b");
@@ -228,7 +226,7 @@ void modificarCitaPorNombre(char nombreArchivo[], char archivoUsuarios[], char n
         fclose(archi);
     }
 }
-
+//le pide al usuario ingresar el nombre de la cita que quiere modificar
 Cita buscarCitaSegunNombre(char nombreArchivo[])
 {
     FILE*archi;
@@ -263,6 +261,7 @@ Cita buscarCitaSegunNombre(char nombreArchivo[])
         fclose(archi);
     }
 }
+//muestra las citas que considera proximas, mostrando solamente las citas que su estado sea n(PENDIENTES)
 void citasProximas (char nombreArchivo[], Cita cita1)
 {
     FILE * archi;
@@ -281,12 +280,12 @@ void citasProximas (char nombreArchivo[], Cita cita1)
         fclose(archi);
     }
 }
-
+//muestra el dia, mes y año de la cita mostrada
 void mostrarFechaCita (Cita aux)
 {
     printf(" %i / %i / %i \n", aux.fecha.day, aux.fecha.month, aux.fecha.year);
 }
-
+//muestra al usuario los distintos campos de una cita cargada y guardada en el archivo de citas
 void mostrar1Cita(Cita cita1)
 {
     puts("\n----------------------------------\n");
@@ -296,7 +295,7 @@ void mostrar1Cita(Cita cita1)
     mostrarFechaCita(cita1);
     puts("\n----------------------------------\n");
 }
-
+//funcion que muestra todas las citas guardadas en un archivo de citas
 void mostrarCitas (char nombreArchivo[]){
     FILE *archi;
     Cita cita1;
@@ -309,7 +308,7 @@ void mostrarCitas (char nombreArchivo[]){
         fclose(archi);
     }
 }
-
+//carga una pila con la cantidad de citas que haya en el mes que el usuario pidió
 void cargarPila(Pila *pila, char nombreArchivo[], int mes){
     FILE *archi;
     Cita cita;
@@ -324,7 +323,7 @@ void cargarPila(Pila *pila, char nombreArchivo[], int mes){
         fclose(archi);
     }
 }
-
+//desapila una pila cargada a fin de retornar el total de citas dentro del archivo
 int cantidadCitasEnMes(char citas[], Pila pila, int mes, char nombreArchivo[]){
     int acc =0;
 
@@ -335,6 +334,65 @@ int cantidadCitasEnMes(char citas[], Pila pila, int mes, char nombreArchivo[]){
         acc ++;
     }
     return acc;
+}
+//misma funcion que antes, solo no pide el id para que la funcion pase TODAS las citas dentro del archivo
+int pasajeDeArchivoAArrayCitasNoId(Cita array[], char nombreArchivo[]){
+    FILE *archi;
+    archi=fopen(nombreArchivo, "rb");
+    Cita cita1;
+    int i=0;
+
+    if(archi!=NULL){
+        while(fread(&cita1, sizeof(Cita), 1, archi)>0){
+                array[i] = cita1;
+                i++;
+        }
+    }
+    fclose(archi);
+}
+//ordena la posicion de las citas cargadas en un arreglo
+void insertar(Cita array[],int pos, Cita aux)
+{
+    int i=pos;
+
+    while(i>=0 && strcmp(aux.nombre,array[i].nombre)==0)
+    {
+        array[i+1]=array[i];
+        i--;
+    }
+    array[i+1];
+}
+//repite la funcion insertar hasta que se haya repetido la misma cantidad de veces que validos haya
+void ordenacion_insercion(Cita array[], int validos)
+{
+ int pos=0;
+
+ while (pos<validos-1)
+ {
+     insertar(array,pos,array[pos+1]);
+ }
+}
+//muestra todas las citas dentro de un array
+void mostrarArrayCitas(Cita array[], int validos)
+{
+    for (int i=0; i<validos; i++)
+    {
+        mostrar1Cita(array[i]);
+    }
+
+}
+//pasa las citas de un archivo a un arreglo, las ordena, y las muestra para luego devolverlas al mismo archivo
+void mostrarCitasOrdenadas(char nombreArchivo[], Cita arrayCita[])
+{
+    int validos=pasajeDeArchivoAArrayCitasNoId(arrayCita, nombreArchivo);
+int i=0;
+        ordenacion_insercion(arrayCita, validos );
+
+        while (i<validos-1)
+        {
+            mostrarArrayCitas(arrayCita,validos);
+        }
+        pasajeDeArregloAArchivoCita(arrayCita,validos,nombreArchivo);
 }
 
 
