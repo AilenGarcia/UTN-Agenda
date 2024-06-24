@@ -6,6 +6,7 @@
 #define DIMNOMBRE 50
 #define DIMDNI 11
 #define DIMPASS 10
+#include "pila.h"
 
 typedef struct{
     char dni[DIMDNI];
@@ -34,6 +35,32 @@ typedef struct{
     char estado;
     Fecha fecha;
 } Cita;
+
+//CITAS
+int rellenarNombreCita(char nombre[]);
+int validarNombreCita(char nombre[], FILE *archi, char nombreArchivo[]); //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA TAREA QUE SE QUIERE ANOTAR EST� REPETIDA O NO
+
+Cita anotar1Cita(FILE *archi, char nombreArchivo[]);
+int anotarCita(char nombreArchivo[]);
+
+int retornarIDSegunNombreCita(char nombreArchivo[], char nombre[]);
+int pasajeDeArchivoAArrayCitas(Cita array[],int id, char nombreArchivo[]);
+void pasajeDeArregloAArchivoCita (Cita array[], int validos, char nombreArchivo[]);
+void eliminarCita(char nombreArchivo[], Cita array[], int id);
+
+Cita modificarCita(Cita cita1, char archivoUsuarios[]);
+void modificarCitaPorNombre(char nombreArchivo[], char archivoUsuarios[], char nombre[]);
+Cita buscarCitaSegunNombre(char nombreArchivo[]);
+
+void citasProximas (char nombreArchivo[], Cita cita1);
+
+void mostrarFechaCita (Cita aux);
+void mostrar1Cita(Cita cita1);
+void mostrarCitas (char nombreArchivo[]);
+
+void cargarPila(Pila *pila, char nombreArchivo[], int mes);
+int cantidadCitasEnMes(char citas[], Pila pila, int mes, char nombreArchivo[]);
+
 
 //EVENTOS
 void mostrarMatriz(char matriz[12][12], int arrayMes[], char eventos[]);
