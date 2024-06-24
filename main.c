@@ -21,6 +21,7 @@ int main()
     Cita cita1;
     Cita arrayCita[50];
     Pila pila1;
+    inicpila(&pila1);
 
     Evento miEvento;
     char archivoEventos[20];
@@ -128,7 +129,7 @@ int main()
         printf("\n --------------------\n"
                "Que desea hacer? \n "
                "1) Eventos \n "
-               "2) Tareas \n"
+               "2) Citas \n"
                "3) Salir \n"
                "--------------------\n");
         fflush(stdin);
@@ -137,14 +138,16 @@ int main()
         system("cls");
 
         if(eleccion ==1){
-                printf("1) Anotar evento \n"
-               "2) Tachar evento \n"
-               "3) Modificar evento \n"
-               "4) Eventos proximos \n"
-               "5) Listado de eventos \n"
-               "6) Mostrar Calendario \n"
-               "7) Buscar evento por Nombre \n"
-               "8) Ordenar por mes \n");
+                printf("\n --------------------\n"
+                        "1) Anotar evento \n"
+                        "2) Tachar evento \n"
+                        "3) Modificar evento \n"
+                        "4) Eventos proximos \n"
+                        "5) Listado de eventos \n"
+                        "6) Mostrar Calendario \n"
+                        "7) Buscar evento por nombre \n"
+                        "8) Ordenar por mes \n"
+                        " --------------------\n");
         fflush(stdin);
         scanf("%i",&eleccionEventos);
             switch(eleccionEventos){
@@ -157,9 +160,8 @@ int main()
                         fflush(stdin);
                         scanf("%c", &controlEvento);
                     }
-
+                    controlEvento='s';
                 break;
-
             case 2:
                     printf("Ingrese el Nombre a buscar: \n");
                     fflush(stdin);
@@ -189,7 +191,9 @@ int main()
                 break;
             case 7:
                     miEvento = buscarEventoSegunNombre(archivoEventos);
-                    mostrarEvento(miEvento);
+                    if(strcmp(miEvento.nombre, "ERROR.ERROR.")!=0){
+                        mostrarEvento(miEvento);
+                    }
                 break;
 
             case 8:
@@ -212,19 +216,26 @@ int main()
                     "4) Citas proximas \n"
                     "5) Listado de citas\n"
                     "6) Total de citas en el mes\n"
-                    "7) Ordenar citas alfabeticamente\n"
+                    "7) Buscar cita por nombre \n"
+                    "8) Ordenar citas alfabeticamente\n"
                     "--------------------\n");
         fflush(stdin);
         scanf("%i",&eleccionCitas);
 
             switch(eleccionCitas){
             case 1:
-                anotarCita(nombreArchivo);
-                break;
-
-            case 2:
-              while(controlCitas== 's')
+                while(controlCitas== 's')
                 {
+                anotarCita(nombreArchivo);
+
+                printf("Quiere agregar otra cita? \n"
+                "Ingrese s para SI o n para NO \n");
+                fflush(stdin);
+                scanf("%c", &controlCitas);
+                }
+                controlCitas='s';
+                break;
+            case 2:
                     printf("Ingrese el Nombre a buscar: \n");
                     fflush(stdin);
                     gets(nombre);
@@ -234,30 +245,20 @@ int main()
                     if(idAEliminar!=0){
                         eliminarCita(nombreArchivo, arrayCita,idAEliminar);
                     }
-                    printf("Quiere eliminar otra cita? \n"
-                               "Ingrese s para SI o n para NO \n");
-                        fflush(stdin);
-                        scanf("%c", &controlCitas);
-                }
                 break;
-
             case 3:
-                 printf("\nIngrese el Nombre: ");
-                    fflush(stdin);
-                    scanf("%s", &nombre);
-                    system("cls");
-                    modificarCitaPorNombre(nombreArchivo, archivoUsuarios, nombre);
-
-            break;
-
+                printf("\nIngrese el Nombre: ");
+                fflush(stdin);
+                scanf("%s", &nombre);
+                system("cls");
+                modificarCitaPorNombre(nombreArchivo, archivoUsuarios, nombre);
+                break;
             case 4:
-           citasProximas(nombreArchivo,cita1);
+                citasProximas(nombreArchivo,cita1);
                 break;
-
             case 5:
-             mostrarCitas(nombreArchivo);
+                mostrarCitas(nombreArchivo);
                 break;
-
             case 6:
                 printf ("ingrese el numero del mes a averiguar: ");
                 fflush(stdin);
@@ -266,11 +267,15 @@ int main()
                 cantidad = cantidadCitasEnMes(arrayCita,pila1,mes, nombreArchivo);
                 printf ("Total de citas en el mes %i: %i \n", mes, cantidad);
                 break;
-
             case 7:
+                cita1 = buscarCitaSegunNombre(nombreArchivo);
+                if(strcmp(cita1.nombre, "ERROR.ERROR.")!=0){
+                    mostrar1Cita(cita1);
+                }
+                break;
+            case 8:
                 mostrarCitasOrdenadas(nombreArchivo, arrayCita);
                 break;
-
             default:
                 printf("Error. Elija una opcion valida \n");
             }

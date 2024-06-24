@@ -58,7 +58,7 @@ void mostrarFechaCita (Cita aux);
 void mostrar1Cita(Cita cita1);
 void mostrarCitas (char nombreArchivo[]);
 
-void cargarPila(Pila *pila, char nombreArchivo[], int mes);
+Pila cargarPila(Pila pila, char nombreArchivo[], int mes);
 int cantidadCitasEnMes(char citas[], Pila pila, int mes, char nombreArchivo[]);
 
 int pasajeDeArchivoAArrayCitasNoId(Cita array[], char nombreArchivo[]);

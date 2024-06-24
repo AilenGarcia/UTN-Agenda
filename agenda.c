@@ -232,8 +232,9 @@ Cita buscarCitaSegunNombre(char nombreArchivo[])
     FILE*archi;
     archi=fopen(nombreArchivo,"rb");
     char nombre[50];
-    Cita cita1;
+    Cita cita1, aux;
     int nombreEncontrado=0;
+    strcpy(aux.nombre,"ERROR.ERROR.");
 
     if(archi != NULL)
     {
@@ -249,17 +250,14 @@ Cita buscarCitaSegunNombre(char nombreArchivo[])
             {
                 printf("La cita %s fue encontrado \n", cita1.nombre);
                 fflush(stdin);
+                fclose(archi);
                 return cita1;
             }
-            else
-            {
-                printf("El nombre ingresado no es valido. \n");
-                fflush(stdin);
-            }
         }
-
         fclose(archi);
     }
+    printf("El nombre ingresado no es valido. \n");
+    return aux;
 }
 //muestra las citas que considera proximas, mostrando solamente las citas que su estado sea n(PENDIENTES)
 void citasProximas (char nombreArchivo[], Cita cita1)
@@ -309,25 +307,24 @@ void mostrarCitas (char nombreArchivo[]){
     }
 }
 //carga una pila con la cantidad de citas que haya en el mes que el usuario pidió
-void cargarPila(Pila *pila, char nombreArchivo[], int mes){
+Pila cargarPila(Pila pila, char nombreArchivo[], int mes){
     FILE *archi;
     Cita cita;
     archi= fopen(nombreArchivo, "rb");
-
     if(archi!=NULL){
         while(fread(&cita, sizeof(Cita), 1, archi)>0){
             if(cita.fecha.month == mes){
-                apilar(pila, cita.fecha.day);
+                apilar(&pila, cita.fecha.day);
             }
         }
         fclose(archi);
     }
+    return pila;
 }
 //desapila una pila cargada a fin de retornar el total de citas dentro del archivo
 int cantidadCitasEnMes(char citas[], Pila pila, int mes, char nombreArchivo[]){
     int acc =0;
-
-    cargarPila(&pila, nombreArchivo, mes);
+    pila = cargarPila(pila, nombreArchivo, mes);
 
     while(!pilavacia(&pila)){
         desapilar(&pila);
@@ -344,33 +341,35 @@ int pasajeDeArchivoAArrayCitasNoId(Cita array[], char nombreArchivo[]){
 
     if(archi!=NULL){
         while(fread(&cita1, sizeof(Cita), 1, archi)>0){
-                array[i] = cita1;
-                i++;
+            array[i] = cita1;
+            i++;
         }
+        fclose(archi);
     }
-    fclose(archi);
+    return i;
 }
 //ordena la posicion de las citas cargadas en un arreglo
 void insertar(Cita array[],int pos, Cita aux)
 {
     int i=pos;
 
-    while(i>=0 && strcmp(aux.nombre,array[i].nombre)==0)
+    while(i>=0 && strcmp(aux.nombre,array[i].nombre)<0)
     {
         array[i+1]=array[i];
         i--;
     }
-    array[i+1];
+    array[i+1]=aux;
 }
 //repite la funcion insertar hasta que se haya repetido la misma cantidad de veces que validos haya
 void ordenacion_insercion(Cita array[], int validos)
 {
- int pos=0;
+    int pos=0;
 
- while (pos<validos-1)
- {
-     insertar(array,pos,array[pos+1]);
- }
+    while (pos<validos-1)
+    {
+        insertar(array,pos,array[pos+1]);
+        pos++;
+    }
 }
 //muestra todas las citas dentro de un array
 void mostrarArrayCitas(Cita array[], int validos)
@@ -385,14 +384,10 @@ void mostrarArrayCitas(Cita array[], int validos)
 void mostrarCitasOrdenadas(char nombreArchivo[], Cita arrayCita[])
 {
     int validos=pasajeDeArchivoAArrayCitasNoId(arrayCita, nombreArchivo);
-int i=0;
-        ordenacion_insercion(arrayCita, validos );
 
-        while (i<validos-1)
-        {
-            mostrarArrayCitas(arrayCita,validos);
-        }
-        pasajeDeArregloAArchivoCita(arrayCita,validos,nombreArchivo);
+    int i=0;
+    ordenacion_insercion(arrayCita, validos );
+    mostrarArrayCitas(arrayCita,validos);
 }
 
 
@@ -754,8 +749,9 @@ Evento buscarEventoSegunNombre(char archivoEventos[])
     FILE*archiE;
     archiE=fopen(archivoEventos,"rb");
     char nombre[50];
-    Evento miEvento;
+    Evento miEvento, aux;
     int nombreEncontrado=0;
+    strcpy(aux.nombre,"ERROR.ERROR.");
 
     if(archiE != NULL)
     {
@@ -775,9 +771,10 @@ Evento buscarEventoSegunNombre(char archivoEventos[])
                 return miEvento;
             }
         }
-        printf("El nombre ingresado no es valido. \n");
         fclose(archiE);
     }
+    printf("El nombre ingresado no es valido. \n");
+    return aux;
 }
 
 ///Funcion para ver los siguientes eventos,se le pasa por parametro el archivo eventos y un evento. Recorrer el archivo y hace uso de la funcnion mostrar evento.
