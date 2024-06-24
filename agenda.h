@@ -56,8 +56,8 @@ void mostrarFechaCita (Cita aux);
 void mostrar1Cita(Cita cita1);
 void mostrarCitas (char nombreArchivo[]);
 
-void cargarPila( char nombreArchivo[], int mes);
-int cantidadCitasEnMes(char citas[], Pila *pila1, int mes, char nombreArchivo[]);
+void cargarPila(Pila *pila, char nombreArchivo[], int mes);
+int cantidadCitasEnMes(char citas[], Pila pila, int mes, char nombreArchivo[]);
 
 
 #endif // AGENDA_H_INCLUDED

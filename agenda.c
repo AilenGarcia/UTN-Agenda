@@ -1,5 +1,5 @@
 #include "agenda.h"
-#include "pila.h"
+
 //corregir la funcion validar cita
 int rellenarNombreCita(char nombre[])  //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA CITA QUE SE QUIERE ANOTAR ESTÁ REPETIDA O NO
 {
@@ -17,6 +17,9 @@ int rellenarNombreCita(char nombre[])  //FUNCION QUE COMPRUEBA SI EL NOMBRE DE L
 int validarNombreCita(char nombre[], FILE *archi, char nombreArchivo[])
 {
     archi=fopen(nombreArchivo, "rb");
+    if(archi == NULL){
+        archi=fopen(nombreArchivo, "ab");
+    }
     if (archi!=NULL){
     int validar=0;
     Cita cita1;
@@ -325,7 +328,7 @@ void citasProximas (char nombreArchivo[], Cita cita1)
         {
             if(cita1.estado== 'n')
             {
-                mostrarCitas(nombreArchivo);
+                mostrar1Cita(cita1);
             }
         }
         fclose(archi);
@@ -360,32 +363,28 @@ void mostrarCitas (char nombreArchivo[]){
     }
 }
 
-void cargarPila( char nombreArchivo[], int mes){
+void cargarPila(Pila *pila, char nombreArchivo[], int mes){
     FILE *archi;
     Cita cita;
-    Pila *pila1;
-
     archi= fopen(nombreArchivo, "rb");
-
 
     if(archi!=NULL){
         while(fread(&cita, sizeof(Cita), 1, archi)>0){
             if(cita.fecha.month == mes){
-                apilar(&pila1, cita.fecha.day);
+                apilar(pila, cita.fecha.day);
             }
         }
         fclose(archi);
     }
 }
 
-int cantidadCitasEnMes(char citas[], Pila *pila1, int mes, char nombreArchivo[]){
+int cantidadCitasEnMes(char citas[], Pila pila, int mes, char nombreArchivo[]){
     int acc =0;
 
-    cargarPila(nombreArchivo, mes);
+    cargarPila(&pila, nombreArchivo, mes);
 
-    while(!pilavacia(&pila1)){
-            printf ("total del mes %i: %p", mes, tope(pila1));
-        desapilar(&pila1);
+    while(!pilavacia(&pila)){
+        desapilar(&pila);
         acc ++;
     }
     return acc;
