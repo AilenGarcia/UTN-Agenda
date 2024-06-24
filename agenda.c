@@ -1,4 +1,5 @@
 #include "agenda.h"
+#include "pila.h"
 //corregir la funcion validar cita
 int rellenarNombreCita(char nombre[])  //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA CITA QUE SE QUIERE ANOTAR ESTÁ REPETIDA O NO
 {
@@ -63,6 +64,35 @@ int validarMes(int month)
     }
 }
 
+Fecha cargarFecha()
+{
+    Fecha miFecha;
+
+    printf("\n ---------------------------- \n");
+    do
+    {
+        printf("Ingrese el dia: \n");
+        fflush(stdin);
+        scanf("%i",&miFecha.day);
+    }
+    while(validarDia(miFecha.day)!=0);
+
+    do
+    {
+        printf("Ingrese el mes: \n");
+        fflush(stdin);
+        scanf("%i", &miFecha.month);
+    }
+    while(validarMes(miFecha.month) !=0);
+
+    printf("Ingrese el año: \n");
+    fflush(stdin);
+    scanf("%i", &miFecha.year);
+    printf("---------------------------------- \n");
+
+    return miFecha;
+}
+
 Cita anotar1Cita(FILE *archi, char nombreArchivo[])
 {
     Cita aux;
@@ -104,36 +134,6 @@ int anotarCita(char nombreArchivo[]) //anota la tarea dentro del archivo, compro
 
     return 0;
 }
-
-Fecha cargarFecha ()
-{
-    Fecha miFecha;
-
-    printf("\n ---------------------------- \n");
-    do
-    {
-        printf("Ingrese el dia: \n");
-        fflush(stdin);
-        scanf("%i",&miFecha.day);
-    }
-    while(validarDia(miFecha.day)!=0);
-
-    do
-    {
-        printf("Ingrese el mes: \n");
-        fflush(stdin);
-        scanf("%i", &miFecha.month);
-    }
-    while(validarMes(miFecha.month) !=0);
-
-    printf("Ingrese el año: \n");
-    fflush(stdin);
-    scanf("%i", &miFecha.year);
-    printf("---------------------------------- \n");
-
-    return miFecha;
-}
-
 
 int retornarIDSegunNombre(char nombreArchivo[], char nombre[])
 {
@@ -358,4 +358,35 @@ void mostrarCitas (char nombreArchivo[]){
         }
         fclose(archi);
     }
+}
+
+void cargarPila( char nombreArchivo[], int mes){
+    FILE *archi;
+    Cita cita;
+    Pila *pila1;
+
+    archi= fopen(nombreArchivo, "rb");
+
+
+    if(archi!=NULL){
+        while(fread(&cita, sizeof(Cita), 1, archi)>0){
+            if(cita.fecha.month == mes){
+                apilar(&pila1, cita.fecha.day);
+            }
+        }
+        fclose(archi);
+    }
+}
+
+int cantidadCitasEnMes(char citas[], Pila *pila1, int mes, char nombreArchivo[]){
+    int acc =0;
+
+    cargarPila(nombreArchivo, mes);
+
+    while(!pilavacia(&pila1)){
+            printf ("total del mes %i: %p", mes, tope(pila1));
+        desapilar(&pila1);
+        acc ++;
+    }
+    return acc;
 }

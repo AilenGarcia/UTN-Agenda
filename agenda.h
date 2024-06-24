@@ -3,7 +3,7 @@
 #include <string.h>
 #ifndef AGENDA_H_INCLUDED
 #define AGENDA_H_INCLUDED
-
+#include "pila.h"
 
 typedef struct{
     int dni;
@@ -31,21 +31,33 @@ typedef struct{
     Fecha fecha;
 } Cita;
 
-int validarCita(char nombre[]); //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA TAREA QUE SE QUIERE ANOTAR ESTÁ REPETIDA O NO
+//CITAS//
+int rellenarNombreCita(char nombre[]);
+int validarNombreCita(char nombre[], FILE *archi, char nombreArchivo[]); //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA TAREA QUE SE QUIERE ANOTAR ESTÁ REPETIDA O NO
+int validarDia(int day);
+int validarDia(int day);
+
+Cita anotar1Cita(FILE *archi, char nombreArchivo[]);
 int anotarCita(char nombreArchivo[]);
 Fecha cargarFecha();
 
-void tacharCita (char nombreArchivo[], Cita array[], int id);
-int retornarIDCitaSegunNombre(char nombreArchivo[]);
+int retornarIDSegunNombre(char nombreArchivo[], char nombre[]);
+int pasajeDeArchivoAArrayCitas(Cita array[],int id, char nombreArchivo[]);
 void pasajeDeArregloAArchivoCita (Cita array[], int validos, char nombreArchivo[]);
-int pasajeDeArchivoAArrayCita (Cita array[],int id, char nombreArchivo[]);
+void eliminarCita(char nombreArchivo[], Cita array[], int id);
 
-Cita modificarCita (Cita cita1, char archivoUsuarios[]);
+Cita modificarCita(Cita cita1, char archivoUsuarios[]);
 void modificarCitaPorNombre(char nombreArchivo[], char archivoUsuarios[], char nombre[]);
+Cita buscarCitaSegunNombre(char nombreArchivo[]);
 
-void mostrarCitas (char nombreArchivo[]);
-void mostrarCita(Cita aux, Usuario persona);
+void citasProximas (char nombreArchivo[], Cita cita1);
+
 void mostrarFechaCita (Cita aux);
+void mostrar1Cita(Cita cita1);
+void mostrarCitas (char nombreArchivo[]);
+
+void cargarPila( char nombreArchivo[], int mes);
+int cantidadCitasEnMes(char citas[], Pila *pila1, int mes, char nombreArchivo[]);
 
 
 #endif // AGENDA_H_INCLUDED

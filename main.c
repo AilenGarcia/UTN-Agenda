@@ -3,6 +3,7 @@
 #include <string.h>
 #include "agenda.h"
 #define DIMNOMBRE 50
+#include "pila.h"
 
 int main()
 {
@@ -10,11 +11,14 @@ int main()
     char nombreArchivo[50]={"cita.bin"};
     char control = 's';
     char controlCitas='s';
-    int eleccion, eleccionUsuario, eleccionEventos, eleccionCitas,idAEliminar;
+    char nombre[25];
+    int id;
+    int eleccion, eleccionUsuario, eleccionEventos, eleccionCitas,idAEliminar, mes;
 Cita cita1;
 Cita arrayCita[50];
-int id;
-char nombre[25];
+Pila *pila1;
+
+inicpila(pila1);
 
     do{
         printf("Que desea hacer? \n"
@@ -65,6 +69,7 @@ char nombre[25];
                "3) Modificar cita \n"
                "4) citas proximas \n"
                "5) Listado de citas\n"
+               "6) Total de citas en el mes"
                     "\nEleccion: ");
         fflush(stdin);
         scanf("%i",&eleccionCitas);
@@ -119,9 +124,22 @@ char nombre[25];
              mostrarCitas(nombreArchivo);
                 break;
 
+            case 6:
+            while(controlCitas=='s')
+            {
+                printf ("ingrese el numero del mes a averiguar: ");
+                fflush(stdin);
+                scanf("%i", &mes);
+
+                cantidadCitasEnMes(arrayCita,pila1,mes, nombreArchivo);
+
+            }
+                break;
+
             default:
                 printf("Error. Elija una opcion valida \n");
             }
+
 
         break;
     default:
