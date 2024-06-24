@@ -45,7 +45,8 @@ int main()
 
     do{
         printf("1) Iniciar sesion \n"
-               "2) Registrase \n");
+               "2) Registrase \n"
+               "3) Salir \n");
         fflush(stdin);
         scanf("%i", &menu);
 
@@ -56,7 +57,7 @@ int main()
         system("cls");
         accesoPorRol=iniciarSesion(archivoUsuarios);
         if(accesoPorRol != 0 && accesoPorRol != 1){
-            printf("\n Datos invalidos, por favor ingreselos correctamente \n");
+            printf("\nPor favor ingrese los datos correctamente correctamente \n\n");
         }
         break;
     case 2:
@@ -64,11 +65,13 @@ int main()
         cargarUsuario(archivoUsuarios);
         accesoPorRol=0;
         break;
+    case 3:
+        printf("\n Saliendo del sistema.....\n");
+        exit(0);
+        break;
     default:
         printf("Error. Elija una opcion valida. \n");
         }
-
-    system("cls");
     }while(accesoPorRol == -1);
 
     do{
@@ -126,19 +129,22 @@ int main()
                "Que desea hacer? \n "
                "1) Eventos \n "
                "2) Tareas \n"
+               "3) Salir \n"
                "--------------------\n");
         fflush(stdin);
         scanf("%i", &eleccion);
 
-    if(eleccion ==1){
-printf("1) Anotar evento \n"
+        system("cls");
+
+        if(eleccion ==1){
+                printf("1) Anotar evento \n"
                "2) Tachar evento \n"
                "3) Modificar evento \n"
                "4) Eventos proximos \n"
                "5) Listado de eventos \n"
                "6) Mostrar Calendario \n"
                "7) Buscar evento por Nombre \n"
-               "8) Ordenar meses \n");
+               "8) Ordenar por mes \n");
         fflush(stdin);
         scanf("%i",&eleccionEventos);
             switch(eleccionEventos){
@@ -155,8 +161,6 @@ printf("1) Anotar evento \n"
                 break;
 
             case 2:
-                while(controlEvento == 's')
-                {
                     printf("Ingrese el Nombre a buscar: \n");
                     fflush(stdin);
                     gets(nombre);
@@ -166,27 +170,13 @@ printf("1) Anotar evento \n"
                     if(idAEliminar!=0){
                         eliminarEvento(archivoEventos, arrayEvento,idAEliminar);
                     }
-                    printf("Quiere eliminar otro Evento? \n"
-                               "Ingrese s para SI o n para NO \n");
-                        fflush(stdin);
-                        scanf("%c", &controlEvento);
-                }
-
                 break;
             case 3:
-                while(controlEvento== 's')
-                {
                     printf("\nIngrese el Nombre: ");
                     fflush(stdin);
                     scanf("%s", &nombre);
-                    system("cls");
-                    modificarEventoPorNombre(archivoEventos, archivoUsuarios, nombre);
 
-                    printf("Quiere modificar otro Evento? \n"
-                               "Ingrese s para SI o n para NO \n");
-                        fflush(stdin);
-                        scanf("%c", &controlEvento);
-                }
+                    modificarEventoPorNombre(archivoEventos, archivoUsuarios, nombre);
                 break;
             case 4:
                     eventosProximos(archivoEventos,miEvento);
@@ -200,7 +190,6 @@ printf("1) Anotar evento \n"
             case 7:
                     miEvento = buscarEventoSegunNombre(archivoEventos);
                     mostrarEvento(miEvento);
-
                 break;
 
             case 8:
@@ -215,15 +204,16 @@ printf("1) Anotar evento \n"
             }
         }
 
-    if(eleccion ==2){
-              printf("1) Anotar cita \n"
-               "2) Tachar cita \n"
-               "3) Modificar cita \n"
-               "4) citas proximas \n"
-               "5) Listado de citas\n"
-               "6) Total de citas en el mes\n"
-               "7) ordenar citas alfabeticamente\n"
-                    "\nEleccion: ");
+        if(eleccion ==2){
+              printf("\n --------------------\n"
+                    "1) Anotar cita \n"
+                    "2) Tachar cita \n"
+                    "3) Modificar cita \n"
+                    "4) Citas proximas \n"
+                    "5) Listado de citas\n"
+                    "6) Total de citas en el mes\n"
+                    "7) Ordenar citas alfabeticamente\n"
+                    "--------------------\n");
         fflush(stdin);
         scanf("%i",&eleccionCitas);
 
@@ -286,7 +276,12 @@ printf("1) Anotar evento \n"
             }
         }
 
-    if(eleccion !=1 && eleccion !=2){
+        if(eleccion ==3){
+            printf("\n Saliendo del sistema.....\n");
+            exit(0);
+        }
+
+        if(eleccion !=1 && eleccion !=2 && eleccion !=3){
         printf("Error. Elija una opcion valida. \n");
         }
 

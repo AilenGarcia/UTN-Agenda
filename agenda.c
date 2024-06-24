@@ -495,10 +495,14 @@ void mostrarUsuariosParaEvento(char usuarios[]){
     FILE *archi;
     Usuario usuario;
     archi=fopen(usuarios, "rb");
+    int resultado;
 
     if(archi!=NULL){
         while(fread(&usuario, sizeof(Usuario),1, archi)>0){
-            printf("|  %s  ", usuario.nombre);
+            resultado = strcmp(usuario.nombre, "Administrador");
+            if(resultado!=0){
+                printf("|  %s  ", usuario.nombre);
+            }
         }
         fclose(archi);
     }
@@ -691,6 +695,7 @@ Evento modificarEvento (Evento miEvento, char archivoUsuarios[]){
         gets(miEvento.nombre);
         break;
     case 2:
+        printf ("Recuerde: 's' para hechas, 'n' para pendientes\n");
         printf("Ingrese el Estado: ");
         fflush(stdin);
         scanf("%c" ,&miEvento.estado);
@@ -715,7 +720,7 @@ void modificarEventoPorNombre(char archivoEvento[], char archivoUsuarios[], char
     FILE *archi;
     archi = fopen(archivoEvento, "r+b");
     Evento miEvento;
-    int encontrado = -1;
+    int encontrado = 1;
     int acc =0;
 
     if(archi!=NULL){
@@ -729,7 +734,7 @@ void modificarEventoPorNombre(char archivoEvento[], char archivoUsuarios[], char
             }
         }
 
-        if(encontrado==-1){
+        if(encontrado==1){
             printf("El Evento no fue encontrado \n");
         }
 
@@ -766,15 +771,11 @@ Evento buscarEventoSegunNombre(char archivoEventos[])
             {
                 printf("El evento %s fue encontrado \n", miEvento.nombre);
                 fflush(stdin);
+                fclose(archiE);
                 return miEvento;
             }
-            else
-            {
-                printf("El nombre ingresado no es valido. \n");
-                fflush(stdin);
-            }
         }
-
+        printf("El nombre ingresado no es valido. \n");
         fclose(archiE);
     }
 }
