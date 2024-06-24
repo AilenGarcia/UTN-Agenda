@@ -27,7 +27,7 @@ int validarNombreCita(char nombre[], FILE *archi, char nombreArchivo[])
 
         if (validar==0)
         {
-            printf ("ya hay una cita con el mismo nombre. Ingrese otro nombre.");
+            printf ("ya hay una cita con el mismo nombre. Ingrese otro nombre.\n");
             return 0;
         }
 
@@ -73,28 +73,18 @@ Cita anotar1Cita(FILE *archi, char nombreArchivo[])
 
     do
     {
-        printf("\ningrese el nombre de su cita: ");
+        printf("\n Ingrese el nombre de su cita: ");
         fflush(stdin);
         gets(aux.nombre);
-validacionNombre=validarNombreCita(aux.nombre, archi, nombreArchivo);
+        validacionNombre=validarNombreCita(aux.nombre, archi, nombreArchivo);
     }
-    while(rellenarNombreCita(aux.nombre)>0 && validacionNombre!=0);
+    while(rellenarNombreCita(aux.nombre)==-1 || validacionNombre==0);
 
-
-    do
-    {
-        printf("El evento ya a ocurrido? \n"
-               "\n Ingrese 's', para si o 'n' para no \n");
-        fflush(stdin);
-        scanf("%c",&aux.estado);
-
-    }
-    while(aux.estado != 'n' && aux.estado != 'N' && aux.estado != 's' && aux.estado != 'S');
+    aux.estado = 'n';
 
     aux.fecha=cargarFecha();
     return aux;
 }
-
 
 int anotarCita(char nombreArchivo[]) //anota la tarea dentro del archivo, comprobando tambien si el nombre de la tarea no está repetida
 {
@@ -243,8 +233,9 @@ void tacharCita (char nombreArchivo[], Cita array[], int id)
     printf("\n Evento eliminado! \n");
 }
 
-Cita modificarCita (Cita cita1, char archivoUsuarios[])
+Cita modificarCita(Cita cita1, char archivoUsuarios[])
 {
+
     printf("\nModificar el Evento por nombre %s \n", cita1.nombre);
     char eleccion='s';
     int control;
@@ -269,6 +260,7 @@ Cita modificarCita (Cita cita1, char archivoUsuarios[])
             gets(cita1.nombre);
             break;
         case 2:
+            printf ("recuerde: 's' para hechas, 'n' para pendientes\n");
             printf("Ingrese el Estado: ");
             fflush(stdin);
             gets(cita1.estado);
@@ -279,7 +271,7 @@ Cita modificarCita (Cita cita1, char archivoUsuarios[])
             break;
         case 4:
             printf("Ingrese el Usuario: ");
-//        usuario1=crearUsuario(nombreArchivo);
+            usuario1=crearUsuario(archivoUsuarios);
             break;
         default:
             printf("Elija una opcion valida \n");
@@ -293,84 +285,44 @@ Cita modificarCita (Cita cita1, char archivoUsuarios[])
     return cita1;
 }
 
-void modificarCitaPorNombre(char nombreArchivo[], char archivoUsuarios[], char nombre[])
-{
+void modificarCitaPorNombre(char nombreArchivo[], char archivoUsuarios[], char nombre[]){
     FILE *archi;
     archi = fopen(nombreArchivo, "r+b");
-    Cita aux;
+    Cita cita1;
     int encontrado = -1;
     int acc =0;
 
-    if(archi!=NULL)
-    {
-        while(fread(&aux, sizeof(Cita), 1, archi)>0)
-        {
+    if(archi!=NULL){
+        while(fread(&cita1, sizeof(Cita), 1, archi)>0){
             acc++;
-            encontrado = strcmp(aux.nombre, nombre);
+            encontrado = strcmp(cita1.nombre, nombre);
 
-            if(encontrado==0)
-            {
+            if(encontrado==0){
                 encontrado=0;
                 break;
             }
         }
 
-        if(encontrado==-1)
-        {
-            printf("La cita no fue encontrada. \n");
+        if(encontrado==-1){
+            printf("La cita no fue encontrada \n");
         }
 
-        if(encontrado!=0)
-        {
-            printf("cita: %s",aux.nombre);
-            aux = modificarCita(aux, archivoUsuarios);
+        if(encontrado==0){
+            printf("Cita: %s",cita1.nombre);
+            cita1 = modificarCita(cita1, archivoUsuarios);
         }
-
         fseek(archi, sizeof(Cita)*(acc-1), SEEK_SET);
-        fwrite(&aux, sizeof(Cita), 1, archi);
-
-
+        fwrite(&cita1, sizeof(Cita), 1, archi);
+        fclose(archi);
     }
-    fclose(archi);
-}
-void mostrarFechaCita (Cita aux)
-{
-    printf(" Dia: %i \n", aux.fecha.day);
-    printf(" Mes: %i \n", aux.fecha.month);
-}
-
-void mostrarCita(Cita aux, Usuario persona)
-{
-    puts("\n----------------------------------\n");
-    printf("Nombre: %s \n", aux.nombre);
-    printf("Estado: %c \n", aux.estado);
-    printf("Usuario: %s\n", persona.nombre);
-    mostrarFechaCita(aux);
-
-}
-
-void mostrarCitas (char nombreArchivo[])
-{
-    FILE *archi;
-    Cita cita2;
-    archi=fopen(nombreArchivo, "rb");
-    Usuario persona;
-
-    if(archi!=NULL)
-    {
-        while(fread(&cita2, sizeof(Cita),1, archi)>0)
-        {
-            mostrarCita(cita2, persona);
-        }
-    }
-    fclose(archi);
 }
 
 Cita buscarCitaSegunNombre(char nombreArchivo[])
 {
     FILE*archi;
+    archi=fopen(nombreArchivo,"rb");
     char nombre[50];
-    Cita aux;
+    Cita cita1;
     int nombreEncontrado=0;
 
     if(archi != NULL)
@@ -379,15 +331,15 @@ Cita buscarCitaSegunNombre(char nombreArchivo[])
         fflush(stdin);
         scanf("%s",&nombre);
 
-        while(fread(&aux,sizeof(Cita),1,archi) > 0 )
+        while(fread(&cita1,sizeof(Cita),1,archi) > 0 )
         {
-            nombreEncontrado=strcmpi(aux.nombre, nombre);
+            nombreEncontrado=strcmpi(cita1.nombre, nombre);
 
             if(nombreEncontrado==0)
             {
-                printf("La cita %s fue encontrado \n", aux.nombre);
+                printf("La cita %s fue encontrado \n", cita1.nombre);
                 fflush(stdin);
-                return aux;
+                return cita1;
             }
             else
             {
@@ -396,29 +348,60 @@ Cita buscarCitaSegunNombre(char nombreArchivo[])
             }
         }
 
-
+        fclose(archi);
     }
 }
-void mostrarCitasProximas(char nombreArchivo[])
+void citasProximas (char nombreArchivo[], Cita cita1)
 {
-    FILE *archi;
-    Cita cita2;
+    FILE * archi;
     archi=fopen(nombreArchivo, "rb");
-    Cita array[50];
-    int id;
-    Usuario persona;
+    int i = 0;
 
-    if (archi!=NULL)
+    if(archi != NULL)
     {
-        while (fread(&cita2, sizeof(Cita),1,archi)>0)
+        while (fread(&cita1, sizeof(Cita),1,archi) > 0)
         {
-            do
+            if(cita1.estado== 'n')
             {
-                mostrarCita(cita2,persona);
-
+                mostrarCitas(cita1);
             }
-            while (cita2.estado!='n');
+        }
+        fclose(archi);
+    }
+}
 
+void mostrarPersonaCita (Cita aux)
+{
+  printf("\n Nombre: %s \n", aux.persona.nombre);
+    printf(" DNI: %s \n", aux.persona.dni);
+    printf(" Edad: %i \n", aux.persona.edad);
+    printf(" Genero: %c \n", aux.persona.genero);
+}
+
+void mostrarFechaCita (Cita aux)
+{
+    printf(" %i / %i / %i \n", aux.fecha.day, aux.fecha.month, aux.fecha.year);
+}
+
+void mostrarCita(Cita cita1)
+{
+    puts("\n----------------------------------\n");
+    printf("Nombre: %s \n", cita1.nombre);
+    printf("Estado: %c \n", cita1.estado);
+    printf("Usuario: %s\n", cita1.persona.nombre);
+    printf("Fecha: ");
+    mostrarFechaCita(cita1);
+    puts("\n----------------------------------\n");
+}
+
+void mostrarCitas (char nombreArchivo[]){
+    FILE *archi;
+    Cita cita1;
+    archi=fopen(nombreArchivo, "rb");
+
+    if(archi!=NULL){
+        while(fread(&cita1, sizeof(Cita),1, archi)>0){
+            mostrarCita(cita1);
         }
         fclose(archi);
     }

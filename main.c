@@ -6,13 +6,16 @@
 
 int main()
 {
+    char archivoUsuarios[50];
     char nombreArchivo[50]={"cita.bin"};
     char control = 's';
+    char accionModificarCitas='s';
     int eleccion, eleccionUsuario, eleccionEventos, eleccionCitas;
 Cita cita1;
 Cita array[50];
 int id;
 char nombre[25];
+
     do{
         printf("Que desea hacer? \n"
                "1) Usuarios \n "
@@ -77,15 +80,28 @@ char nombre[25];
                 break;
 
             case 3:
-//                modificarCitaPorNombre(nombreArchivo,archivoUsuarios,nombre[])
+                while(accionModificarCitas=='s')
+                    {
+                 printf("\nIngrese el Nombre: ");
+                    fflush(stdin);
+                    scanf("%s", &nombre);
+                    system("cls");
+
+                    modificarCitaPorNombre(nombreArchivo, archivoUsuarios, nombre);
+
+                    printf("Quiere modificar otro Evento? \n"
+                               "Ingrese s para SI o n para NO \n");
+                        fflush(stdin);
+                        scanf("%c", &accionModificarCitas);
+                }
             break;
 
             case 4:
-            mostrarCitasProximas(nombreArchivo);
+           citasProximas(nombreArchivo,cita1);
                 break;
 
             case 5:
-                mostrarCitas(nombreArchivo);
+             mostrarCitas(nombreArchivo);
                 break;
 
             default:
