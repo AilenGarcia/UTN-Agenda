@@ -135,120 +135,85 @@ Fecha cargarFecha ()
 }
 
 
-int retornarIDCitaSegunNombre(char nombreArchivo[]) ///FUNCION QUE RETORNA EL ID DE LA CITA SEGUN EL NOMBRE
+int retornarIDSegunNombre(char nombreArchivo[], char nombre[])
 {
-    FILE*archi;
+    FILE *archi;
     archi=fopen(nombreArchivo,"rb");
-    char nombre[50];
     Cita cita1;
     int nombreEncontrado=0;
-    char control='s';
 
     if(archi != NULL)
     {
-        printf("Ingrese el Nombre a buscar: \n");
-        fflush(stdin);
-        scanf("%s",&nombre);
-
         while(fread(&cita1,sizeof(Cita),1,archi) > 0 )
         {
-            nombreEncontrado=strcmpi(cita1.nombre, nombre);
+            nombreEncontrado=strcmp(cita1.nombre, nombre);
 
-            do
-            {
                 if(nombreEncontrado==0)
                 {
+                    fclose(archi);
                     return cita1.id;
                 }
-                else
-                {
-                    printf("El nombre ingresado no se encontro. \n"
-                           "Quiere intentar con otro nombre? \n"
-                           "Ingrese s para Seguir o cualquier letra para Salir \n");
-                }
             }
-            while(control == 's');
-        }
-
+        printf("El nombre ingresado no se encontro. \n");
         fclose(archi);
     }
 }
 
-int pasajeDeArchivoAArrayCita (Cita array[],int id, char nombreArchivo[])  ///PASA LOS REGISTROS DE CITAS CARGADAS A UN ARREGLO
-{
-    FILE *archi;                                                          ///PARA PODER TACHAR LA CITA BUSCADA
+int pasajeDeArchivoAArrayCitas(Cita array[],int id, char nombreArchivo[]){
+    FILE *archi;
     archi=fopen(nombreArchivo, "rb");
-    Cita citas;
+    Cita cita1;
     int i=0;
-    int resultado;
 
-    if(archi!=NULL)
-    {
-        while(fread(&citas, sizeof(Cita), 1, archi)>0)
-        {
-
-            if(citas.id == id)
-            {
-                resultado = 0;
-            }
-            if(resultado !=0)
-            {
-                array[i] = citas;
+    if(archi!=NULL){
+        while(fread(&cita1, sizeof(Cita), 1, archi)>0){
+            if(cita1.id !=id){
+                array[i] = cita1;
                 i++;
             }
         }
     }
     fclose(archi);
+
     return i;
 }
 
-void pasajeDeArregloAArchivoCita (Cita array[], int validos, char nombreArchivo[])
-{
+void pasajeDeArregloAArchivoCita (Cita array[], int validos, char nombreArchivo[]){
     FILE *archi;
     archi=fopen(nombreArchivo, "wb");
     int i=0;
 
-    if(archi!=NULL)
-    {
-        do
-        {
+    if(archi!=NULL){
+        while(i< validos){
             fwrite(&array[i], sizeof(Cita),1,archi);
             i++;
         }
-        while(i< validos);
     }
     fclose(archi);
 }
 
-void tacharCita (char nombreArchivo[], Cita array[], int id)
-{
+void eliminarCita(char nombreArchivo[], Cita array[], int id){
     int validos;
-
-    id=retornarIDCitaSegunNombre(nombreArchivo);
-
-    validos = pasajeDeArchivoAArrayCita (array, id, nombreArchivo);
-
+    validos = pasajeDeArchivoAArrayCitas(array, id, nombreArchivo);
     pasajeDeArregloAArchivoCita(array,validos, nombreArchivo);
 
-    printf("\n Evento eliminado! \n");
+    printf("\n Cita eliminada \n");
 }
 
 Cita modificarCita(Cita cita1, char archivoUsuarios[])
 {
 
-    printf("\nModificar el Evento por nombre %s \n", cita1.nombre);
+    printf("\nModificar la cita por nombre %s \n", cita1.nombre);
     char eleccion='s';
     int control;
     Fecha fecha1;
-    Usuario usuario1;
 
     do
     {
         printf("Que desea modificar? \n"
                "1) Nombre \n"
                "2) Estado \n"
-               "3) Fecha \n"
-               "4) Persona \n");
+               "3) Fecha \n");
         fflush(stdin);
         scanf("%i", &control);
 
@@ -263,16 +228,13 @@ Cita modificarCita(Cita cita1, char archivoUsuarios[])
             printf ("recuerde: 's' para hechas, 'n' para pendientes\n");
             printf("Ingrese el Estado: ");
             fflush(stdin);
-            gets(cita1.estado);
+            scanf("%c",&cita1.estado);
             break;
         case 3:
             printf("Ingrese la fecha: ");
             fecha1=cargarFecha();
             break;
-        case 4:
-            printf("Ingrese el Usuario: ");
-            usuario1=crearUsuario(archivoUsuarios);
-            break;
+
         default:
             printf("Elija una opcion valida \n");
             break;
@@ -363,19 +325,11 @@ void citasProximas (char nombreArchivo[], Cita cita1)
         {
             if(cita1.estado== 'n')
             {
-                mostrarCitas(cita1);
+                mostrarCitas(nombreArchivo);
             }
         }
         fclose(archi);
     }
-}
-
-void mostrarPersonaCita (Cita aux)
-{
-  printf("\n Nombre: %s \n", aux.persona.nombre);
-    printf(" DNI: %s \n", aux.persona.dni);
-    printf(" Edad: %i \n", aux.persona.edad);
-    printf(" Genero: %c \n", aux.persona.genero);
 }
 
 void mostrarFechaCita (Cita aux)
@@ -383,12 +337,11 @@ void mostrarFechaCita (Cita aux)
     printf(" %i / %i / %i \n", aux.fecha.day, aux.fecha.month, aux.fecha.year);
 }
 
-void mostrarCita(Cita cita1)
+void mostrar1Cita(Cita cita1)
 {
     puts("\n----------------------------------\n");
     printf("Nombre: %s \n", cita1.nombre);
     printf("Estado: %c \n", cita1.estado);
-    printf("Usuario: %s\n", cita1.persona.nombre);
     printf("Fecha: ");
     mostrarFechaCita(cita1);
     puts("\n----------------------------------\n");
@@ -401,7 +354,7 @@ void mostrarCitas (char nombreArchivo[]){
 
     if(archi!=NULL){
         while(fread(&cita1, sizeof(Cita),1, archi)>0){
-            mostrarCita(cita1);
+            mostrar1Cita(cita1);
         }
         fclose(archi);
     }

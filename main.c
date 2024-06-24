@@ -9,10 +9,10 @@ int main()
     char archivoUsuarios[50];
     char nombreArchivo[50]={"cita.bin"};
     char control = 's';
-    char accionModificarCitas='s';
-    int eleccion, eleccionUsuario, eleccionEventos, eleccionCitas;
+    char controlCitas='s';
+    int eleccion, eleccionUsuario, eleccionEventos, eleccionCitas,idAEliminar;
 Cita cita1;
-Cita array[50];
+Cita arrayCita[50];
 int id;
 char nombre[25];
 
@@ -76,11 +76,26 @@ char nombre[25];
                 break;
 
             case 2:
-                tacharCita(nombreArchivo,array,id);
+              while(controlCitas== 's')
+                {
+                    printf("Ingrese el Nombre a buscar: \n");
+                    fflush(stdin);
+                    gets(nombre);
+
+                    idAEliminar=retornarIDSegunNombre(nombreArchivo, nombre);
+
+                    if(idAEliminar!=0){
+                        eliminarCita(nombreArchivo, arrayCita,idAEliminar);
+                    }
+                    printf("Quiere eliminar otra cita? \n"
+                               "Ingrese s para SI o n para NO \n");
+                        fflush(stdin);
+                        scanf("%c", &controlCitas);
+                }
                 break;
 
             case 3:
-                while(accionModificarCitas=='s')
+                while(controlCitas=='s')
                     {
                  printf("\nIngrese el Nombre: ");
                     fflush(stdin);
@@ -89,10 +104,10 @@ char nombre[25];
 
                     modificarCitaPorNombre(nombreArchivo, archivoUsuarios, nombre);
 
-                    printf("Quiere modificar otro Evento? \n"
+                    printf("Quiere modificar otra cita? \n"
                                "Ingrese s para SI o n para NO \n");
                         fflush(stdin);
-                        scanf("%c", &accionModificarCitas);
+                        scanf("%c", &controlCitas);
                 }
             break;
 
