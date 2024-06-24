@@ -127,7 +127,8 @@ printf("1) Anotar evento \n"
                "3) Modificar evento \n"
                "4) Eventos proximos \n"
                "5) Listado de eventos \n"
-               "6) Mostrar Calendario \n");
+               "6) Mostrar Calendario \n"
+               "7) Buscar evento por Nombre \n");
         fflush(stdin);
         scanf("%i",&eleccionEventos);
             switch(eleccionEventos){
@@ -186,6 +187,10 @@ printf("1) Anotar evento \n"
             case 6:
                     mostrarMatriz(matriz, arrayMes, archivoEventos);
                 break;
+            case 7:
+                miEvento = buscarEventoSegunNombre(archivoEventos);
+
+                    mostrarEvento(miEvento);
             default:
                 printf("Error. Elija una opcion valida \n");
             }

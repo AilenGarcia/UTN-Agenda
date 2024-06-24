@@ -1,6 +1,7 @@
 #include "agenda.h"
 
 //EVENTOS
+///Funcion para cargar fecha, retorna un dato de tipo fecha
 Fecha cargarFecha ()
 {
     Fecha miFecha;
@@ -28,6 +29,7 @@ Fecha cargarFecha ()
     return miFecha;
 }
 
+/// Funcion que recibe un dato de tipo entero como parametro y comprueba el rango de valor de este, retorna 0 en caso de funcionar o -1 en caso que no
 int validarDia(int day)
 {
     if(day>0 && day<32){
@@ -38,6 +40,7 @@ int validarDia(int day)
     }
 }
 
+/// Funcion que recibe un dato de tipo entero como parametro y comprueba el rango de valor de este, retorna 0 en caso de funcionar o -1 en caso que no
 int validarMes(int month)
 {
     if(month>0 && month<13){
@@ -48,6 +51,7 @@ int validarMes(int month)
     }
 }
 
+///Funcion que recibe un dato de tipo Fecha por parametro y muestra este mismo
 void mostrarFecha (Fecha miFecha)
 {
     printf("\n ---------------------------- \n");
@@ -57,6 +61,7 @@ void mostrarFecha (Fecha miFecha)
     printf("\n ---------------------------- \n");
 }
 
+///Funcion para la carga de eventos, recibe como parametro el archivo de usuarios y retorna un dato de tipo Evento
 Evento cargarEvento(char usuarios[])
 {
     Evento miEvento;
@@ -91,6 +96,7 @@ Evento cargarEvento(char usuarios[])
     return miEvento;
 }
 
+///Funcion para mostrar usuarios de eventos, recibe por parametro el archivo usuarios, entra en el archivo y muestra su contenido.
 void mostrarUsuariosParaEvento(char usuarios[]){
     FILE *archi;
     Usuario usuario;
@@ -104,6 +110,7 @@ void mostrarUsuariosParaEvento(char usuarios[]){
     }
 }
 
+///Funcion para eleccion de usuario, se le pasa por parametro el archivo de usuarios y un string, lee el archivo y retorna el usuario encontrado
 Usuario elegirUsuarioPorNombre(char usuarios[], char nombre[]){
     FILE *archi;
     Usuario usuario;
@@ -125,6 +132,7 @@ Usuario elegirUsuarioPorNombre(char usuarios[], char nombre[]){
     }
 }
 
+///Funcion para buscar usuario segun nombre, se le pasa por parametro el archivo usuarios y un string, lee el archivo y retorna el usuario encontrado.
 int buscarPorUsuarioPorNombre(char usuarios[], char nombre[]){
     FILE *archi;
     Usuario usuario;
@@ -180,6 +188,7 @@ void guardarEventoEnArchivo(char nombreArchivo[], char usuarios[])
     fclose(archivo);
 }
 
+///Funcion para saber la cantidad de registros que se encuentran en el archivo, se pasa por parametro el archivo
 int cuentaElementosArchivo(char nombreArchivo[])
 {
 
@@ -223,6 +232,7 @@ int retornarIDSegunNombre(char archivoEventos[], char nombre[])
     }
 }
 
+///Funcion para el pasaje de archivo a arreglo, se le pasa por parametro un arreglo de tipo Evento, el ID del evento y el archivo
 int pasajeDeArchivoAArrayEventos(Evento array[],int id, char nombreArchivo[]){
     FILE *archi;
     archi=fopen(nombreArchivo, "rb");
@@ -265,6 +275,7 @@ void eliminarEvento (char nombreEvento[], Evento array[], int id){
     printf("\n Evento eliminado \n");
 }
 
+///Funcion para modificar evento, por parametro se le pasa un evento y el archivo de usuarios, se le pide al usuario que seleccione que parametro modificar.
 Evento modificarEvento (Evento miEvento, char archivoUsuarios[]){
     printf("\nModificar el Evento por nombre %s \n", miEvento.nombre);
     char eleccion='s';
@@ -304,7 +315,8 @@ Evento modificarEvento (Evento miEvento, char archivoUsuarios[]){
     }while(eleccion=='s');
     return miEvento;
 }
-
+///Funcion para modificar un evento, recibiendo como parametro el nombre de esta, el archivo eventos y usuarios, entra en una secuencia y compara los nombres
+///de los eventos, retorna 0 en caso de encontrarlo
 void modificarEventoPorNombre(char archivoEvento[], char archivoUsuarios[], char nombre[]){
     FILE *archi;
     archi = fopen(archivoEvento, "r+b");
@@ -337,6 +349,7 @@ void modificarEventoPorNombre(char archivoEvento[], char archivoUsuarios[], char
     }
 }
 
+///Funcion para la busqueda de un evento segun nombre, recibe por parametro el archivo eventos, en caso de encontrar el evento retorna 0.
 Evento buscarEventoSegunNombre(char archivoEventos[])
 {
     FILE*archiE;
@@ -372,6 +385,7 @@ Evento buscarEventoSegunNombre(char archivoEventos[])
     }
 }
 
+///Funcion para ver los siguientes eventos,se le pasa por parametro el archivo eventos y un evento. Recorrer el archivo y hace uso de la funcnion mostrar evento.
 void eventosProximos (char archivoEventos[], Evento tuEvento)
 {
     FILE * archiE;
@@ -391,6 +405,7 @@ void eventosProximos (char archivoEventos[], Evento tuEvento)
     }
 }
 
+///Funcion para poder mostrar un usuario dentro de eventos, recibe por parametro un evento
 void mostrarPersonaEvento (Evento miEvento)
 {
   printf("\n Nombre: %s \n", miEvento.persona.nombre);
@@ -399,11 +414,13 @@ void mostrarPersonaEvento (Evento miEvento)
     printf(" Genero: %c \n", miEvento.persona.genero);
 }
 
+///Funcion para poder mostrar una fecha dentro de eventos, recibe por parametro un evento
 void mostrarFechaEvento (Evento miEvento)
 {
     printf(" %i / %i / %i \n", miEvento.fecha.day, miEvento.fecha.month, miEvento.fecha.year);
 }
 
+///Funcion para poder mostrar un evento entero, recibe por parametro un evento.
 void mostrarEvento(Evento miEvento)
 {
     puts("\n----------------------------------\n");
@@ -415,6 +432,7 @@ void mostrarEvento(Evento miEvento)
     puts("\n----------------------------------\n");
 }
 
+///Funcion para mostrar lo eventos guardados dentro de un archivo, recibe por parametro el archivo eventos y hace uso de la funcion mostrarEvento
 void mostrarEventos (char archivoEventos[]){
     FILE *archi;
     Evento miEvento;
@@ -428,7 +446,7 @@ void mostrarEventos (char archivoEventos[]){
     }
 }
 
-
+///Funcion para poder mostrar el contenido de una matriz, recibe por parametro una matriz, un arreglo y un evento.
 void mostrarMatriz(char matriz[12][12], int arrayMes[], char eventos[]){
     int validos = pasarFechasArray(arrayMes, eventos);
     int encontrado = -1;
@@ -448,6 +466,7 @@ void mostrarMatriz(char matriz[12][12], int arrayMes[], char eventos[]){
     }
 }
 
+///Funcion para cargar fechas dentro de un arreglo, se le pasa por parametro un arreglo y un evento.
 int pasarFechasArray(int arrayMes[], char eventos[]){
     FILE *archi;
     archi = fopen(eventos, "rb");
@@ -466,6 +485,7 @@ int pasarFechasArray(int arrayMes[], char eventos[]){
     return i;
 }
 
+///Funcion para recorrer un arreglo, recibe por parametro un arreglo,
 int recorrerArray(int arrayMes[], int validos, int mes){
     for(int i=0; i<validos; i++){
         if(arrayMes[i] == mes){
