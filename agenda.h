@@ -24,23 +24,44 @@ typedef struct{
     int id;
     char nombre[30];
     char estado;
-    Usuario persona[20];
-    Fecha fecha[];
+    Usuario persona;
+    Fecha fecha;
 } Evento;
 
 typedef struct{
     int id;
     char nombre[30];
     char estado;
-    Fecha fecha[];
-} Tarea;
+    Fecha fecha;
+} Cita;
 
-//TAREAS
-int validarTarea(char *idTarea, char tareas[]); //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA TAREA QUE SE QUIERE ANOTAR ESTÁ REPETIDA O NO
-int anotarTarea(char nombreArchivo[], int validos);
+//EVENTOS
+void mostrarMatriz(char matriz[12][12], int arrayMes[], char eventos[]);
+int pasarFechasArray(int arrayMes[], char eventos[]);
+int recorrerArray(int arrayMes[], int validos, int mes);
+void mostrarUsuariosParaEvento(char usuarios[]);
+int buscarPorUsuarioPorNombre(char usuarios[], char nombre[]);
+Usuario elegirUsuarioPorNombre(char usuarios[], char nombre[]);
+Fecha cargarFecha ();
+Evento cargarEvento(char usuarios[]);
+void mostrarFecha (Fecha miFecha);
+void mostrarEvento(Evento miEvento);
+void mostrarEventos (char archivoEventos[]);
+void mostrarPersonaEvento (Evento miEvento);
+void mostrarFechaEvento (Evento miEvento);
+void guardarEventoEnArchivo(char nombreArchivo[], char usuarios[]);
+int cuentaElementosArchivo(char nombreArchivo[]);
+int pasajeDeArchivoAArrayEventos(Evento array[],int id, char nombreArchivo[]);
+void pasajeDeArregloAArchivoEvento (Evento array[], int validos, char nombreArchivo[]);
+void eliminarEvento (char nombreEvento[], Evento array[], int id);
+void modificarEventoPorNombre(char archivoEvento[], char archivoUsuarios[], char nombre[]);
+Evento buscarEventoSegunNombre(char archivoEventos[]);
+int retornarIDSegunNombre(char archivoEventos[], char nombre[]);
+void eventosProximos (char archivoEventos[],Evento tuEvento);
+int validarDia(int day);
+int validarMes(int month);
 
 //USUARIOS
-
 int validarPorDni(char usuarios[], char dni[]);
 int iniciarSesion(char usuarios[]);
 void cargarDatos(char nombreArchivo[]);

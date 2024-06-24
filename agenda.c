@@ -1,69 +1,481 @@
 #include "agenda.h"
 
-//TAREAS
-int validarTarea(char *idTarea, char tareas[]){ //FUNCION QUE COMPRUEBA SI EL NOMBRE DE LA TAREA QUE SE QUIERE ANOTAR ESTÁ REPETIDA O NO
-    FILE *archi;
-    archi = fopen(tareas, "ab");
-    Tarea tareaLeida;
-//rewind (archi);
+//EVENTOS
+Fecha cargarFecha ()
+{
+    Fecha miFecha;
 
-    while (fread(&tareaLeida, sizeof(Tarea),1,archi)){
+    printf("\n ---------------------------- \n");
+    do
+    {
+        printf("Ingrese el dia: \n");
+        fflush(stdin);
+        scanf("%i",&miFecha.day);
+    }while(validarDia(miFecha.day)!=0);
 
-        if (tareaLeida.id==idTarea){
+    do
+    {
+        printf("Ingrese el mes: \n");
+        fflush(stdin);
+        scanf("%i", &miFecha.month);
+    }while(validarMes(miFecha.month) !=0);
 
-            return 1; //ya hay una tarea con el mismo nombre
-           }
-    }
+    printf("Ingrese el año: \n");
+    fflush(stdin);
+    scanf("%i", &miFecha.year);
+    printf("---------------------------------- \n");
 
- return 0; //ese nombre no existe
+    return miFecha;
 }
 
-int anotarTarea(char nombreArchivo[], int validos) //anota la tarea dentro del archivo, comprobando tambien si el nombre de la tarea no está repetida
+int validarDia(int day)
 {
-    FILE *archi= fopen(nombreArchivo, "ab");
-    ///en
-    Tarea nuevaTarea;
-    if (archi==NULL)
-    {
-        printf ("no se pudo abrir el archivo.");
-        fclose (archi);
+    if(day>0 && day<32){
+        return 0;
+    }else{
+        printf("\n -------------- Dia mal ingresado -------------- \n");
         return -1;
     }
+}
 
+int validarMes(int month)
+{
+    if(month>0 && month<13){
+        return 0;
+    }else{
+        printf("\n -------------- Mes mal ingresado -------------- \n");
+        return -1;
+    }
+}
 
+void mostrarFecha (Fecha miFecha)
+{
+    printf("\n ---------------------------- \n");
+    printf("Dia: %i \n", miFecha.day);
+    printf("Mes: %i \n", miFecha.month);
+    printf("Anio: %i \n", miFecha.year);
+    printf("\n ---------------------------- \n");
+}
 
-    printf("ingrese el numero identificatorio de su nueva tarea: ");
-    fflush(stdin);
-    scanf ("%i", &nuevaTarea.id);
-///la funcion esta en el .h, repasar librerias para implementarlas bie, porque las funciones van en un .c aparte
-///por eso no anda la funcion de validar
-///igualemente coordinen los nombres de las structuras
-///cambien el nombre de las variables que pusieron aca
-///
-    if(validarTarea(nuevaTarea.id, archi)==1)  //comprueba si el nombre que ingresó está repetido o no
+Evento cargarEvento(char usuarios[])
+{
+    Evento miEvento;
+    Usuario miUsuario;
+    char nombre[50];
+    char validacionEstado = 'm';
+
+    miEvento.id=rand()*9999;
+    do
     {
-        printf("la tarea ya existe.");
+        printf("\n Ingrese el nombre del Evento: \n");
+        fflush(stdin);
+        gets(miEvento.nombre);
+
+    }while(validarNombre(miEvento.nombre) != 0);
+
+    printf("Ingrese la fecha del evento: \n");
+    miEvento.fecha = cargarFecha();
+    do{
+    printf("\n Usuarios disponibles: \n");
+    mostrarUsuariosParaEvento(usuarios);
+
+    printf("\n Ingrese el usuario \n");
+    fflush(stdin);
+    gets(nombre);
+
+    }while(buscarPorUsuarioPorNombre(usuarios, nombre)==-1);
+
+    miEvento.persona = elegirUsuarioPorNombre(usuarios, nombre);
+    miEvento.estado= 'n';
+
+    return miEvento;
+}
+
+void mostrarUsuariosParaEvento(char usuarios[]){
+    FILE *archi;
+    Usuario usuario;
+    archi=fopen(usuarios, "rb");
+
+    if(archi!=NULL){
+        while(fread(&usuario, sizeof(Usuario),1, archi)>0){
+            printf("|  %s  ", usuario.nombre);
+        }
         fclose(archi);
     }
+}
 
-    printf("ingrese el nombre de su tarea: ");
-    fgets(nuevaTarea.nombre,50, stdin);
+Usuario elegirUsuarioPorNombre(char usuarios[], char nombre[]){
+    FILE *archi;
+    Usuario usuario;
+    int resultado;
+    int encontrado = -1;
+    archi = fopen(usuarios, "rb");
 
-    printf ("ingrese la fecha a recordar de esta tarea(formato dd/mm): ");
-    fflush (stdin);
-    scanf ("%i", nuevaTarea.fecha);
+    if(archi!=NULL){
+        while(fread(&usuario, sizeof(Usuario), 1, archi)>0){
+
+        resultado = strcmp(usuario.nombre, nombre);
+
+        if(resultado==0){
+            fclose(archi);
+            return usuario;
+            }
+        }
+    fclose(archi);
+    }
+}
+
+int buscarPorUsuarioPorNombre(char usuarios[], char nombre[]){
+    FILE *archi;
+    Usuario usuario;
+    int resultado;
+    int encontrado = -1;
+    archi = fopen(usuarios, "rb");
+
+    if(archi!=NULL){
+        while(fread(&usuario, sizeof(Usuario), 1, archi)>0){
+
+        resultado = strcmp(usuario.nombre, nombre);
+
+        if(resultado==0){
+            fclose(archi);
+            return 0;
+            }
+        }
+    fclose(archi);
+    }
+    printf("\n Usuario no encontrado, elija uno de la lista \n");
+    return -1;
+}
+
+///Carga de evento pasando por parametro el archivo
+void guardarEventoEnArchivo(char nombreArchivo[], char usuarios[])
+{
+    FILE *archivo = fopen(nombreArchivo, "ab");
+    Evento miEvento;
+
+    if (archivo == NULL) {
+        printf("Error al abrir el archivo");
+        return;
+    }
+
+        if(archivo!=NULL){
+    FILE *archivo = fopen(nombreArchivo, "ab");
+    Evento miEvento;
+
+    if (archivo == NULL) {
+        printf("Error al abrir el archivo");
+        return;
+    }
+
+        if(archivo!=NULL){
+            miEvento = cargarEvento(usuarios);
+            fwrite(&miEvento, sizeof(Evento), 1, archivo);
+        fclose(archivo);
+    }
+
+    fclose(archivo);
+    }
+
+    fclose(archivo);
+}
+
+int cuentaElementosArchivo(char nombreArchivo[])
+{
+
+    FILE* archi= fopen(nombreArchivo, "rb");
+    int registros= 0;
+    Evento miEvento;
+
+    if(archi!=NULL)
+    {
+        while(fread(&miEvento, sizeof(Evento), 1, archi)>0)
+        {
+            registros++;
+        }
+        fclose(archi);
+    }
+    return registros;
+}
+
+///Funcion que retorna ID de un evento segun el nombre que se busca, se pasa por parametro solo el archivo retorna el numero de ID
+int retornarIDSegunNombre(char archivoEventos[], char nombre[])
+{
+    FILE *archiE;
+    archiE=fopen(archivoEventos,"rb");
+    Evento miEvento;
+    int nombreEncontrado=0;
+
+    if(archiE != NULL)
+    {
+        while(fread(&miEvento,sizeof(Evento),1,archiE) > 0 )
+        {
+            nombreEncontrado=strcmp(miEvento.nombre, nombre);
+
+                if(nombreEncontrado==0)
+                {
+                    fclose(archiE);
+                    return miEvento.id;
+                }
+            }
+        printf("El nombre ingresado no se encontro. \n");
+        fclose(archiE);
+    }
+}
+
+int pasajeDeArchivoAArrayEventos(Evento array[],int id, char nombreArchivo[]){
+    FILE *archi;
+    archi=fopen(nombreArchivo, "rb");
+    Evento eventos;
+    int i=0;
+
+    if(archi!=NULL){
+        while(fread(&eventos, sizeof(Evento), 1, archi)>0){
+            if(eventos.id !=id){
+                array[i] = eventos;
+                i++;
+            }
+        }
+    }
+    fclose(archi);
+
+    return i;
+}
+
+void pasajeDeArregloAArchivoEvento (Evento array[], int validos, char nombreArchivo[]){
+    FILE *archi;
+    archi=fopen(nombreArchivo, "wb");
+    int i=0;
+
+    if(archi!=NULL){
+        while(i< validos){
+            fwrite(&array[i], sizeof(Evento),1,archi);
+            i++;
+        }
+    }
+    fclose(archi);
+}
+
+///Funcion para eliminar un evento del archivo segun el ID, pasandolo a un arreglo y devuelta al archivo los restantes
+void eliminarEvento (char nombreEvento[], Evento array[], int id){
+    int validos;
+    validos = pasajeDeArchivoAArrayEventos(array, id, nombreEvento);
+    pasajeDeArregloAArchivoEvento(array,validos, nombreEvento);
+
+    printf("\n Evento eliminado \n");
+}
+
+Evento modificarEvento (Evento miEvento, char archivoUsuarios[]){
+    printf("\nModificar el Evento por nombre %s \n", miEvento.nombre);
+    char eleccion='s';
+    char nombre[50];
+    int control;
+
+    do{
+        printf("Que desea modificar? \n"
+               "1) Nombre \n"
+               "2) Estado \n"
+               "3) Fecha \n");
+        fflush(stdin);
+        scanf("%i", &control);
+
+        switch(control){
+    case 1:
+        printf("Ingrese el nombre: ");
+        fflush(stdin);
+        gets(miEvento.nombre);
+        break;
+    case 2:
+        printf("Ingrese el Estado: ");
+        fflush(stdin);
+        scanf("%c" ,&miEvento.estado);
+        break;
+    case 3:
+        printf("Ingrese la fecha: ");
+        miEvento.fecha=cargarFecha();
+        break;
+    default:
+        printf("Elija una opcion valida \n");
+        break;
+    }
+    printf("Si desea continuar modificando presione s \n");
+    fflush(stdin);
+    scanf("%c", &eleccion);
+    }while(eleccion=='s');
+    return miEvento;
+}
+
+void modificarEventoPorNombre(char archivoEvento[], char archivoUsuarios[], char nombre[]){
+    FILE *archi;
+    archi = fopen(archivoEvento, "r+b");
+    Evento miEvento;
+    int encontrado = -1;
+    int acc =0;
+
+    if(archi!=NULL){
+        while(fread(&miEvento, sizeof(Evento), 1, archi)>0){
+            acc++;
+            encontrado = strcmp(miEvento.nombre, nombre);
+
+            if(encontrado==0){
+                encontrado=0;
+                break;
+            }
+        }
+
+        if(encontrado==-1){
+            printf("El Evento no fue encontrado \n");
+        }
+
+        if(encontrado==0){
+            printf("Evento: %s",miEvento.nombre);
+            miEvento = modificarEvento(miEvento, archivoUsuarios);
+        }
+        fseek(archi, sizeof(Evento)*(acc-1), SEEK_SET);
+        fwrite(&miEvento, sizeof(Evento), 1, archi);
+        fclose(archi);
+    }
+}
+
+Evento buscarEventoSegunNombre(char archivoEventos[])
+{
+    FILE*archiE;
+    archiE=fopen(archivoEventos,"rb");
+    char nombre[50];
+    Evento miEvento;
+    int nombreEncontrado=0;
+
+    if(archiE != NULL)
+    {
+        printf("Ingrese el Nombre a buscar:");
+        fflush(stdin);
+        scanf("%s",&nombre);
+
+        while(fread(&miEvento,sizeof(Evento),1,archiE) > 0 )
+        {
+            nombreEncontrado=strcmpi(miEvento.nombre, nombre);
+
+            if(nombreEncontrado==0)
+            {
+                printf("El evento %s fue encontrado \n", miEvento.nombre);
+                fflush(stdin);
+                return miEvento;
+            }
+            else
+            {
+                printf("El nombre ingresado no es valido. \n");
+                fflush(stdin);
+            }
+        }
+
+        fclose(archiE);
+    }
+}
+
+void eventosProximos (char archivoEventos[], Evento tuEvento)
+{
+    FILE * archiE;
+    archiE=fopen(archivoEventos, "rb");
+    int i = 0;
+
+    if(archiE != NULL)
+    {
+        while (fread(&tuEvento, sizeof(Evento),1,archiE) > 0)
+        {
+            if(tuEvento.estado== 'n')
+            {
+                mostrarEvento(tuEvento);
+            }
+        }
+        fclose(archiE);
+    }
+}
+
+void mostrarPersonaEvento (Evento miEvento)
+{
+  printf("\n Nombre: %s \n", miEvento.persona.nombre);
+    printf(" DNI: %s \n", miEvento.persona.dni);
+    printf(" Edad: %i \n", miEvento.persona.edad);
+    printf(" Genero: %c \n", miEvento.persona.genero);
+}
+
+void mostrarFechaEvento (Evento miEvento)
+{
+    printf(" %i / %i / %i \n", miEvento.fecha.day, miEvento.fecha.month, miEvento.fecha.year);
+}
+
+void mostrarEvento(Evento miEvento)
+{
+    puts("\n----------------------------------\n");
+    printf("Nombre: %s \n", miEvento.nombre);
+    printf("Estado: %c \n", miEvento.estado);
+    printf("Usuario: %s\n", miEvento.persona.nombre);
+    printf("Fecha: ");
+    mostrarFechaEvento(miEvento);
+    puts("\n----------------------------------\n");
+}
+
+void mostrarEventos (char archivoEventos[]){
+    FILE *archi;
+    Evento miEvento;
+    archi=fopen(archivoEventos, "rb");
+
+    if(archi!=NULL){
+        while(fread(&miEvento, sizeof(Evento),1, archi)>0){
+            mostrarEvento(miEvento);
+        }
+        fclose(archi);
+    }
+}
 
 
+void mostrarMatriz(char matriz[12][12], int arrayMes[], char eventos[]){
+    int validos = pasarFechasArray(arrayMes, eventos);
+    int encontrado = -1;
+    printf("\n En rojo apareceran los meses con eventos \n");
+    printf("-----------------------------------------\n");
+    for(int i=0; i<12; i++){
+        encontrado = recorrerArray(arrayMes, validos, i+1);
+        if(encontrado ==0){
+            printf("\x1b[31m");
+            printf("   %s   ", matriz[i]);
+            printf("\n");
+            printf("\x1B[37m");
+        }else{
+            printf("   %s   ", matriz[i]);
+            printf("\n");
+            }
+    }
+}
 
-    fwrite(&nuevaTarea,sizeof(Tarea),1, archi);
-    printf("tarea anotada con exito!");
+int pasarFechasArray(int arrayMes[], char eventos[]){
+    FILE *archi;
+    archi = fopen(eventos, "rb");
+    Evento evento;
+    int i=0;
 
-    return 0;
+    if(archi!=NULL){
+        while(fread(&evento, sizeof(Evento), 1, archi)>0){
+            if(evento.estado == 'n'){
+                arrayMes[i]= evento.fecha.month;
+                i++;
+            }
+        }
+        fclose(archi);
+    }
+    return i;
+}
+
+int recorrerArray(int arrayMes[], int validos, int mes){
+    for(int i=0; i<validos; i++){
+        if(arrayMes[i] == mes){
+            return 0;
+        }
+    }
+    return -1;
 }
 
 //USUARIOS
-
-
 int iniciarSesion(char usuarios[]){
     Usuario usuario;
     char dni[DIMDNI];

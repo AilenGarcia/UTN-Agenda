@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "colors.h"
 #include "agenda.h"
 
 int main()
@@ -16,11 +15,24 @@ int main()
     strcpy(archivoUsuarios, "usuarios.bin");
     Usuario arregloUsuarios[100];
 
+    Evento miEvento;
+    char archivoEventos[20];
+    strcpy(archivoEventos,"eventos.bin");
+    int registros = 0;
+    int idAEliminar=0;
+    Evento arrayEvento[100];
+    char nombre[50];
+    char controlEvento = 's';
+    Evento eventoM[50][50];
+    char matriz[12][12]={"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
+    int arrayMes[100];
+
+
     cargarDatos(archivoUsuarios);
 
-    printf( RED );
-    printf("          BIENVENIDOS! \n");
-    printf( WHITE );
+    printf("\x1b[31m");
+    printf("     BIENVENIDOS! \n");
+    printf("\x1B[37m");
 
     do{
         printf("1) Iniciar sesion \n"
@@ -110,15 +122,69 @@ int main()
         scanf("%i", &eleccion);
 
     if(eleccion ==1){
-        printf("1) Anotar evento \n"
+printf("1) Anotar evento \n"
                "2) Tachar evento \n"
                "3) Modificar evento \n"
                "4) Eventos proximos \n"
-               "5) Listado de eventos");
+               "5) Listado de eventos \n"
+               "6) Mostrar Calendario \n");
         fflush(stdin);
         scanf("%i",&eleccionEventos);
             switch(eleccionEventos){
             case 1:
+                    while (controlEvento=='s')
+                    {
+                        guardarEventoEnArchivo(archivoEventos, archivoUsuarios);
+                        printf("Quiere cargar otro Evento? \n"
+                               "Ingrese s para SI o n para NO \n");
+                        fflush(stdin);
+                        scanf("%c", &controlEvento);
+                    }
+
+                break;
+
+            case 2:
+                while(controlEvento == 's')
+                {
+                    printf("Ingrese el Nombre a buscar: \n");
+                    fflush(stdin);
+                    gets(nombre);
+
+                    idAEliminar=retornarIDSegunNombre(archivoEventos, nombre);
+
+                    if(idAEliminar!=0){
+                        eliminarEvento(archivoEventos, arrayEvento,idAEliminar);
+                    }
+                    printf("Quiere eliminar otro Evento? \n"
+                               "Ingrese s para SI o n para NO \n");
+                        fflush(stdin);
+                        scanf("%c", &controlEvento);
+                }
+
+                break;
+            case 3:
+                while(controlEvento== 's')
+                {
+                    printf("\nIngrese el Nombre: ");
+                    fflush(stdin);
+                    scanf("%s", &nombre);
+                    system("cls");
+                    modificarEventoPorNombre(archivoEventos, archivoUsuarios, nombre);
+
+                    printf("Quiere modificar otro Evento? \n"
+                               "Ingrese s para SI o n para NO \n");
+                        fflush(stdin);
+                        scanf("%c", &controlEvento);
+                }
+                break;
+            case 4:
+                    eventosProximos(archivoEventos,miEvento);
+                break;
+            case 5:
+                    mostrarEventos(archivoEventos);
+                break;
+            case 6:
+                    mostrarMatriz(matriz, arrayMes, archivoEventos);
                 break;
             default:
                 printf("Error. Elija una opcion valida \n");
