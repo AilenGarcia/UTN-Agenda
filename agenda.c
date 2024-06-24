@@ -485,6 +485,24 @@ int pasarFechasArray(int arrayMes[], char eventos[]){
     return i;
 }
 
+///Funcion para pasar un evento a un arreglo, se le pasa por parametro un arreglo de eventos y el archivo eventos
+int pasarArray(Evento arrayE[], char eventos[])
+{
+    FILE *archi;
+    archi = fopen(eventos, "rb");
+    Evento evento;
+    int i=0;
+
+    if(archi!=NULL){
+        while(fread(&evento, sizeof(Evento), 1, archi)>0){
+                arrayE[i]= evento;
+                i++;
+        }
+        fclose(archi);
+    }
+    return i;
+}
+
 ///Funcion para recorrer un arreglo, recibe por parametro un arreglo,
 int recorrerArray(int arrayMes[], int validos, int mes){
     for(int i=0; i<validos; i++){
@@ -495,6 +513,50 @@ int recorrerArray(int arrayMes[], int validos, int mes){
     return -1;
 }
 
+///Funcion para encontrar el menor mes dentro de un arreglo de eventos, se le pasa por parametro un arreglo de eventos, la posicion a buscar y la cantidad de eventos dentro del arreglo
+int posicion_menor (Evento arregloEventos[], int pos, int registros)
+{
+    Evento menor = arregloEventos[pos];
+    int posmenor = pos;
+    int index = pos +1;
+
+
+    while (index < registros)
+    {
+        if(menor.fecha.month > arregloEventos[index].fecha.month)
+        {
+            menor = arregloEventos[index];
+            posmenor = index;
+        }
+        index++;
+    }
+    return posmenor;
+}
+
+///Funcion que ordena los meses de un arreglo de evento de menor a mayor, se le pasa por parametro un arreglo de tipo eventos y la cantidad de eventos dentro del arreglo
+void ordenacion_seleccion (Evento arregloEventos[], int registros)
+{
+    int posmenor;
+    int i = 0;
+    Evento aux;
+    while(i < registros-1)
+    {
+        posmenor = posicion_menor(arregloEventos,i,registros);
+        aux = arregloEventos[posmenor];
+        arregloEventos[posmenor]= arregloEventos[i];
+        arregloEventos[i] = aux;
+        i++;
+    }
+}
+
+///Funcion para mostrar un arreglo de eventos, se le pasa por parametro un arreglo de tipo evento y la cantidad de eventos dentro del arreglo
+void mostrarArrayMes(Evento arrayMes[], int registros)
+{
+    for (int i=0 ; i<registros ; i++)
+    {
+        mostrarEvento(arrayMes[i]);
+    }
+}
 //USUARIOS
 int iniciarSesion(char usuarios[]){
     Usuario usuario;
@@ -528,6 +590,8 @@ int validarNombre(char nombre[]){
         return -1;
     }
 }
+
+
 
 //FUNCION PARA CARGAR NOMBRE, RECIBE POR PARAMETRO UN ARREGLO. EN UN CICLO SE INGRESA EL NOMBRE Y SE GUARDA EN UNA VARIABLE Y SE REPITE
 //HASTA QUE SE CUMPLA LA VALIDACION. AL FINAL IGUALA LA VARIABLE A NOMBRE

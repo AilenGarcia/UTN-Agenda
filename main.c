@@ -26,6 +26,8 @@ int main()
     Evento eventoM[50][50];
     char matriz[12][12]={"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
     int arrayMes[100];
+    int mesPosicion=0;
+
 
 
     cargarDatos(archivoUsuarios);
@@ -128,7 +130,8 @@ printf("1) Anotar evento \n"
                "4) Eventos proximos \n"
                "5) Listado de eventos \n"
                "6) Mostrar Calendario \n"
-               "7) Buscar evento por Nombre \n");
+               "7) Buscar evento por Nombre \n"
+               "8) Ordenar meses \n");
         fflush(stdin);
         scanf("%i",&eleccionEventos);
             switch(eleccionEventos){
@@ -188,9 +191,19 @@ printf("1) Anotar evento \n"
                     mostrarMatriz(matriz, arrayMes, archivoEventos);
                 break;
             case 7:
-                miEvento = buscarEventoSegunNombre(archivoEventos);
-
+                    miEvento = buscarEventoSegunNombre(archivoEventos);
                     mostrarEvento(miEvento);
+
+                break;
+
+            case 8:
+                    registros = pasarArray(arrayEvento,archivoEventos);
+                    mostrarArrayMes(arrayEvento,registros);
+                    ordenacion_seleccion(arrayEvento, registros);
+                    mostrarArrayMes(arrayEvento,registros);
+
+                break;
+
             default:
                 printf("Error. Elija una opcion valida \n");
             }

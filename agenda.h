@@ -60,6 +60,11 @@ int retornarIDSegunNombre(char archivoEventos[], char nombre[]);
 void eventosProximos (char archivoEventos[],Evento tuEvento);
 int validarDia(int day);
 int validarMes(int month);
+int posicion_menor (Evento arregloEventos[], int pos, int registros);
+void ordenacion_seleccion (Evento arregloEventos[], int registros);
+void mostrarArrayMes(Evento arrayMes[], int registros);
+int pasarArray(Evento arrayE[], char eventos[]);
+
 
 //USUARIOS
 int validarPorDni(char usuarios[], char dni[]);
